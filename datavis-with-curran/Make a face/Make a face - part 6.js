@@ -1,38 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BackgroundCircle } from './BackgroundCircle';
-import { Eyes } from './Eyes';
-import { Mouth } from './Mouth';
+import { range } from 'd3';
+import { Face } from './Face';
 
-const width = 960;
-const height = 500;
-const centerX = width / 2;
-const centerY = height / 2;
-const strokeWidth = 10;
-const eyeOffsetX = 90;
-const eyeOffsetY = 100;
-const eyeRadius = 40;
-const mouthWidth = 20;
-const mouthRadius = 140;
+const width = 166;
+const height = 166;
 
-const App = () => {
-  return (
-    <svg width={width} height={height}>
-      <g transform={`translate(${centerX},${centerY})`}>
-        <BackgroundCircle
-          radius={centerY - strokeWidth}
-          strokeWidth={strokeWidth}
-        />
-        <Eyes
-          eyeOffsetX={eyeOffsetX}
-          eyeOffsetY={eyeOffsetY}
-          eyeRadius={eyeRadius}
-        />
-        <Mouth mouthRadius={mouthRadius} mouthWidth={mouthWidth} />
-      </g>
-    </svg>
-  );
-};
+const faceArray = [1, 2, 3, 4, 5];
+
+const App = () =>
+  faceArray.map(() => (
+    <Face
+      width={width}
+      height={height}
+      centerX={width / 2}
+      centerY={height / 2}
+      strokeWidth={10}
+      eyeOffsetX={30}
+      eyeOffsetY={30}
+      eyeRadius={10}
+      mouthWidth={10}
+      mouthRadius={40}
+    />
+  ));
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(<App />, rootElement);
