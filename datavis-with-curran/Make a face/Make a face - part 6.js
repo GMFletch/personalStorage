@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import { range } from 'd3';
 import { Face } from './Face';
 
-const width = 166;
+const width = 160;
 const height = 166;
 
-const faceArray = [1, 2, 3, 4, 5];
+const faceArray = range(6 * 3);
+
+console.log(faceArray);
 
 const App = () =>
   faceArray.map(() => (
@@ -15,12 +17,12 @@ const App = () =>
       height={height}
       centerX={width / 2}
       centerY={height / 2}
-      strokeWidth={10}
-      eyeOffsetX={30}
-      eyeOffsetY={30}
-      eyeRadius={10}
-      mouthWidth={10}
-      mouthRadius={40}
+      strokeWidth={6 + Math.random() * 3}
+      eyeOffsetX={20 + Math.random() * 9}
+      eyeOffsetY={20 + Math.random() * 15}
+      eyeRadius={5 + Math.random() * 10}
+      mouthWidth={7 + Math.random() * 9}
+      mouthRadius={30 + Math.random() * 10}
     />
   ));
 
