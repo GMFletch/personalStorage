@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fork of Datavis w/ Curran - Loading and Parsing CSV Data</title>
+  </head>
+  <body>
+    <script>
+      const csvUrl =
+        'https://gist.githubusercontent.com/edufletch/b79b117cd14812f3809231c54e440b9c/raw/cssNamedColors.csv';
+
+      const fetchText = async (url) => {
+        const response = await fetch(url);
+        return await response.text();
+      };
+
+      fetchText(csvUrl).then((text) => console.log(text));
+
+      //   fetch(url).then((response) => {
+      //     response.text().then((text) => {
+      //       console.log(text);
+      //     });
+      //   });
+    </script>
+  </body>
+</html>
