@@ -9,10 +9,6 @@ testInputs(1);
 testTables(table1, 4);
 testTables(table2, 7);
 
-// function getTextType(obj) {
-//   return obj.math ? 'math' : obj.inputType === 'mixed' ? 'mixed' : 'text';
-// }
-
 function testInputs(startingRow = 1) {
   for (let i = 0, L = textTestingTypes.length; i < L; i++) {
     table3.updateCell(startingRow + i, 1, {
