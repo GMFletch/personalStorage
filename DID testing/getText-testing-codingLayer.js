@@ -45,13 +45,13 @@ function testTables(testingTable, startingRow = 4) {
   for (let i = 0, L = successTexts.length; i < L; i++) {
     table3.updateCell(startingRow + i, 1, {
       value:
-        getText(
+        didUtils.sandbox.getText(
           testingTable.data.rows[testingTable.type === 'table' ? 0 : 1][i]
         ) === successTexts[i]
           ? 'pass'
           : 'FAIL',
       className:
-        getText(
+        didUtils.sandbox.getText(
           testingTable.data.rows[testingTable.type === 'table' ? 0 : 1][i]
         ) === successTexts[i]
           ? 'bg-success'
