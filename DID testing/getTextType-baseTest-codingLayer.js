@@ -5,9 +5,17 @@ const inputTestingComps = [input1, input2, input3];
 
 const textTestingTypes = ['text', 'math', 'mixed'];
 
-testInputs(1);
-testTables(table1, 4);
-testTables(table2, 7);
+function testInputsAndTables() {
+  testInputs(1);
+  testTables(table1, 4);
+  testTables(table2, 7);
+}
+
+testInputsAndTables();
+
+button1.on('click', () => {
+  testInputsAndTables();
+});
 
 function testInputs(startingRow = 1) {
   for (let i = 0, L = textTestingTypes.length; i < L; i++) {

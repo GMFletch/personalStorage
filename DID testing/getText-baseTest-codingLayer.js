@@ -9,14 +9,16 @@ const successTexts = [
   'words $4x$ and numbers $+2$ here',
 ];
 
-testInputs(1);
-testTables(table1, 4);
-testTables(table2, 7);
-
-button1.on('click', () => {
+function testInputsAndTables() {
   testInputs(1);
   testTables(table1, 4);
   testTables(table2, 7);
+}
+
+testInputsAndTables();
+
+button1.on('click', () => {
+  testInputsAndTables();
 });
 
 function testInputs(startingRow = 1) {
