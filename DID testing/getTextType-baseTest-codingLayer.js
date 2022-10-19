@@ -13,10 +13,6 @@ function testInputsAndTables() {
 
 testInputsAndTables();
 
-button1.on('click', () => {
-  testInputsAndTables();
-});
-
 function testInputs(startingRow = 1) {
   for (let i = 0, L = textTestingTypes.length; i < L; i++) {
     table3.updateCell(startingRow + i, 1, {
