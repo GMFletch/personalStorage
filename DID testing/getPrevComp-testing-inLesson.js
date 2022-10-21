@@ -8,8 +8,8 @@ const ID1 = 'slide-4cc0d50a863a';
 
 const constName = getPrevComp({
   slideID: ID1,
-  compName: 'ggb1',
-  compType: 'geogebra',
+  compName: 'componentName',
+  compType: 'componentType',
   utils,
   components,
 
@@ -17,8 +17,7 @@ const constName = getPrevComp({
 
   fibNumInputs: (numFibInputs = 1), // ignore if not fib
   ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
-  ggbStorageComp: 'nameOfCompOnThisSlide', // ignore if not ggb; else, be sure to provide name of component on landing slide where you would like to save the ggb data
-  selectSingleOrMult: 'multiple', //either 'single' or 'multiple'; ignore if not select
+  selectSingleOrMult: 'single', //either 'single' or 'multiple'; ignore if not select
   tableSize: { rows: 1, columns: 2 }, // ignore if not table
 });
 
@@ -133,6 +132,7 @@ function getPrevComp(obj) {
     case 'geogebra':
       const ggbInnerData = obj.ggbInnerData;
       const ggbStorageComp = obj.ggbStorageComp;
+      // ADD IN STORAGE COMP HERE
       // establish default in same data structure as original
       const defGGB = {
         data: {},
@@ -151,9 +151,12 @@ function getPrevComp(obj) {
         console.warn('typeof ggbInnerData passed to getPrevComp shown below');
         console.log(typeof ggbInnerData);
         return;
-      } else if (typeof ggbStorageComp !== 'string') {
+      } else if (
+        typeof ggbStorageComp !== 'string' ||
+        !components.hasOwnProperty(ggbStorageComp)
+      ) {
         console.warn(
-          'Error in getPrevComp DID Library function: Be sure value for for ggbStorageComp is a string.'
+          'Error in getPrevComp DID Library function: Be sure value for for ggbStorageComp is a string and is a component on this slide.'
         );
         console.warn('argment passed to getPrevComp shown below');
         console.log(obj);
@@ -327,10 +330,18 @@ function getPrevComp(obj) {
         }
       }
 
-      console.log(defTable);
-
-      if (
-        typeof inpTableSize !== 'object' ||
+      if (typeof inpTableSize !== 'object') {
+        console.warn(
+          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp has tableSize as a property, and that it is an object.'
+        );
+        console.warn('tableSize argument passed to getPrevComp shown below');
+        console.log(inpTableSize);
+        console.warn(
+          'typeof tableSize argument passed to getPrevComp shown below'
+        );
+        console.log(typeof inpTableSize);
+        return;
+      } else if (
         typeof inpRows !== 'number' ||
         typeof inpColumns !== 'number' ||
         !Number.isInteger(inpRows) ||
@@ -338,15 +349,25 @@ function getPrevComp(obj) {
         !Number.isInteger(inpColumns) ||
         inpColumns < 0
       ) {
-        return {
-          success: false,
-          errorMessage:
-            'Be sure argument for getPrevComp includes property of tableSize and that it is an object that includes the properties of rows and columns and that both have positive integers.',
-        };
+        console.warn(
+          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp has tableSize as a property that itself includes properties of rows and columns, that they are both numbers (not strings), and that they are non-negative integers.'
+        );
+        console.warn('rows argument passed to getPrevComp shown below');
+        console.log(inpRows);
+        console.warn('typeof rows argument passed to getPrevComp shown below');
+        console.log(typeof inpRows);
+        console.warn('columns argument passed to getPrevComp shown below');
+        console.log(inpColumns);
+        console.warn(
+          'typeof columns argument passed to getPrevComp shown below'
+        );
+        console.log(typeof inpColumns);
+        return;
       }
+
       const prelimTable =
         utils.getFromSlide(slideID, compName, defTable) || defTable;
-      console.log(prelimTable);
+      // SEEING AN ERROR HERE FOR WHEN THE DEFAULT TABLE IS USED. IT IS ADDING ADDITIONAL ROWS SO THAT WE END UP WITH DOUBLE THE ROWS
       const numRows = !!prelimTable.data?.rows?.length
         ? prelimTable.data.rows.length
         : inpRows;
@@ -378,11 +399,18 @@ function getPrevComp(obj) {
       prevTable.data.hasData =
         // uncomment following line for original tables where students edit headers:
         //prevTable.data.columns.some(({ value }) => value) ||
+        /*
         prevTable.data.rows.some((row) =>
           row.some(({ value, mixedText, inputType, math }) =>
             getInputTypeForGetPrevComp(inputType, math) === 'mixed'
               ? getMixed(mixedText)
               : value
+          )
+        );
+        */
+        prevTable.data.rows.some((row) =>
+          row.some((cell) =>
+            getTextType(cell) === 'mixed' ? getMixed(mixedText) : value
           )
         );
       prevTable.data.isComplete =
@@ -477,4 +505,36 @@ function getData(dataName, component) {
     return;
   } // make sure a comp is passed
   return component?.storage?.[dataName];
+}
+
+function getMixed(obj) {
+  return obj.mixedText[0]?.children
+    .map((child) => {
+      if (child.text) {
+        return child.text;
+      } else if (child.latex) {
+        return `$${child.latex}$`;
+      } else {
+        return '';
+      }
+    })
+    .filter((val) => !!val)
+    .join('');
+}
+
+function getTextType(obj) {
+  const tempVal = obj.math
+    ? 'math'
+    : obj.inputType === 'mixed'
+    ? 'mixed'
+    : obj.inputType === 'text'
+    ? 'text'
+    : '';
+  if (tempVal === '') {
+    console.warn(
+      'In getTextType DID library function: Unknown inputType for obj shown below'
+    );
+    console.log(obj);
+  }
+  return tempVal;
 }
