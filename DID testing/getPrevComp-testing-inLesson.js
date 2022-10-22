@@ -1,3 +1,16 @@
+/*
+  assumptions:
+  1. for use with complextable, fillblank, geogebra, input, select, and table components
+  2. defaults from most components have been removed; when doing library pass in the future, consideration will need to paid to account for these changes ('smoke test'); for example, when a default table is returned on a slide, that slide will need to prevent any functionality pushing data from the prevTable to a table on that slide - there will only be one row/cell returned, so assumptions that the returned table maps to a table on that slide will be faulty; similar concerns for complextable, fillblank, select, and table components
+
+  future recommendations:
+  -tables-
+  1. issue with getText returning data for math cells impacts table.data.hasData and table.data.isComplete
+  2. potential issue with tables where students are able to edit headers; possible solution of checking columns if they are editable and then comparing/merging with results of rows
+  3. consideration for tables; should flagText/goBackString be changed to something like "incomplete input on slide X" instead of "no input yet on slide X" when there is data, but just not complete?
+  4. work/help needed to update fillCells function for tables to take advantage of getText, getTextType, etc.
+*/
+
 //import getTextType from './getTextType'; // not used due to specific requirements for library - needs full object, but only math and inputType are passed here
 //import getText from './getText';
 //import getMixed from './getMixed';
@@ -8,8 +21,8 @@ const ID1 = 'slide-4cc0d50a863a';
 
 const constName = getPrevComp({
   slideID: ID1,
-  compName: 'componentName',
-  compType: 'componentType',
+  compName: 'table0',
+  compType: 'table',
   utils,
   components,
 
@@ -17,8 +30,6 @@ const constName = getPrevComp({
 
   fibNumInputs: (numFibInputs = 1), // ignore if not fib
   ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
-  selectSingleOrMult: 'single', //either 'single' or 'multiple'; ignore if not select
-  tableSize: { rows: 1, columns: 2 }, // ignore if not table
 });
 
 console.log(constName);
@@ -131,7 +142,7 @@ function getPrevComp(obj) {
     case 'ggb':
     case 'geogebra':
       const ggbInnerData = obj.ggbInnerData;
-      const ggbStorageComp = obj.ggbStorageComp;
+      const storageComp = getFirstComponent(components);
       // ADD IN STORAGE COMP HERE
       // establish default in same data structure as original
       const defGGB = {
@@ -150,20 +161,6 @@ function getPrevComp(obj) {
         console.log(ggbInnerData);
         console.warn('typeof ggbInnerData passed to getPrevComp shown below');
         console.log(typeof ggbInnerData);
-        return;
-      } else if (
-        typeof ggbStorageComp !== 'string' ||
-        !components.hasOwnProperty(ggbStorageComp)
-      ) {
-        console.warn(
-          'Error in getPrevComp DID Library function: Be sure value for for ggbStorageComp is a string and is a component on this slide.'
-        );
-        console.warn('argment passed to getPrevComp shown below');
-        console.log(obj);
-        console.warn('ggbStorageComp passed to getPrevComp shown below');
-        console.log(ggbStorageComp);
-        console.warn('typeof ggbStorageComp passed to getPrevComp shown below');
-        console.log(typeof ggbStorageComp);
         return;
       }
 
@@ -190,7 +187,7 @@ function getPrevComp(obj) {
       // maintain a record of whether we've had data
       const existingData = getData(
         `oldData${slideID + compName}`,
-        ggbStorageComp
+        components[storageComp]
       );
       const hadData = hasData || existingData?.data?.hadData || false;
       if (hasData) {
@@ -199,8 +196,7 @@ function getPrevComp(obj) {
         // create a dummy object to pass to updateData
         const newData = {};
         newData[`oldData${slideID + compName}`] = { ...returnGGB };
-        // storageComp.updateData(newData);
-        saveData(newData, ggbStorageComp);
+        saveData(newData, components[storageComp]);
       } else if (existingData?.data?.hasData) {
         // if we don't have new data but there is oldData, grab it
         returnGGB = { ...existingData };
@@ -234,14 +230,11 @@ function getPrevComp(obj) {
 
       return { ...prevInput };
     case 'select':
-      const selectSingleOrMult = obj?.selectSingleOrMult;
-
       // establish default in same data structure as original
       const defSelect = {
         data: {
           selected: [],
           options: [{ label: '', value: '0' }],
-          type: selectSingleOrMult,
         },
         isDefault: true,
         type: 'select',
@@ -249,7 +242,6 @@ function getPrevComp(obj) {
       // get previous data
       const prevSelect =
         utils.getFromSlide(slideID, compName, defSelect) || defSelect;
-
       let selLabels = prevSelect.data.options
         .map((opt) => {
           if (prevSelect.data.selected.includes(opt.value)) {
@@ -260,19 +252,11 @@ function getPrevComp(obj) {
       // fill in other useful data
       prevSelect.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevSelect.data.hasData = !!prevSelect.data.selected.length;
-      prevSelect.data.chosen =
-        prevSelect.data.type === 'single'
-          ? parseInt(prevSelect.data.selected[0])
-          : prevSelect.data.selected.map((stringNum) => parseInt(stringNum));
-      prevSelect.data.chosenSingle = parseInt(prevSelect.data.selected[0]);
-      prevSelect.data.chosenMult = prevSelect.data.selected.map((stringNum) =>
-        parseInt(stringNum)
-      );
       prevSelect.data.chosenLabels = selLabels.length
         ? [...selLabels]
         : [prevSelect.data.goBackString];
       prevSelect.data.slideNum = slideNum;
-      // set text values
+      // set text value
       prevSelect.data.flagText = prevSelect.data.hasData
         ? ''
         : prevSelect.data.goBackString;
@@ -280,11 +264,6 @@ function getPrevComp(obj) {
       return { ...prevSelect };
     case 'table':
     case 'tableorig':
-      const inpTableSize = obj?.tableSize;
-      const inpRows = inpTableSize?.rows;
-      const inpColumns = inpTableSize?.columns;
-      // establish default in same data structure as original
-
       const defTable = {
         data: { rows: [], columns: [] },
         isDefault: true,
@@ -322,68 +301,19 @@ function getPrevComp(obj) {
         ariaLabel: 'Please add text',
       };
 
-      for (let i = 0; i < inpColumns; i++) {
-        defTable.data.columns.push(defColumn);
-        defTable.data.rows.push([]);
-        for (let j = 0; j < inpRows; j++) {
-          defTable.data.rows[i].push(defRow);
-        }
-      }
+      defTable.data.columns.push(defColumn);
+      defTable.data.rows.push([defRow]);
 
-      if (typeof inpTableSize !== 'object') {
-        console.warn(
-          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp has tableSize as a property, and that it is an object.'
-        );
-        console.warn('tableSize argument passed to getPrevComp shown below');
-        console.log(inpTableSize);
-        console.warn(
-          'typeof tableSize argument passed to getPrevComp shown below'
-        );
-        console.log(typeof inpTableSize);
-        return;
-      } else if (
-        typeof inpRows !== 'number' ||
-        typeof inpColumns !== 'number' ||
-        !Number.isInteger(inpRows) ||
-        inpRows < 0 ||
-        !Number.isInteger(inpColumns) ||
-        inpColumns < 0
-      ) {
-        console.warn(
-          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp has tableSize as a property that itself includes properties of rows and columns, that they are both numbers (not strings), and that they are non-negative integers.'
-        );
-        console.warn('rows argument passed to getPrevComp shown below');
-        console.log(inpRows);
-        console.warn('typeof rows argument passed to getPrevComp shown below');
-        console.log(typeof inpRows);
-        console.warn('columns argument passed to getPrevComp shown below');
-        console.log(inpColumns);
-        console.warn(
-          'typeof columns argument passed to getPrevComp shown below'
-        );
-        console.log(typeof inpColumns);
-        return;
-      }
-
-      const prelimTable =
-        utils.getFromSlide(slideID, compName, defTable) || defTable;
-      // SEEING AN ERROR HERE FOR WHEN THE DEFAULT TABLE IS USED. IT IS ADDING ADDITIONAL ROWS SO THAT WE END UP WITH DOUBLE THE ROWS
-      const numRows = !!prelimTable.data?.rows?.length
-        ? prelimTable.data.rows.length
-        : inpRows;
-      const numColumns = !!prelimTable.data?.rows?.[0]?.length
-        ? prelimTable.data.rows[0].length
-        : inpColumns;
-      for (let i = 0; i < numRows; i++) {
-        let newRow = [];
-        for (let j = 0; j < numColumns; j++) {
-          newRow.push({ value: '' });
-        }
-        defTable.data.rows.push([...newRow]);
-      }
       // get previous data
       const prevTable =
         utils.getFromSlide(slideID, compName, defTable) || defTable;
+
+      if (prevTable.isDefault) {
+        console.log('default table');
+        return prevTable;
+      }
+
+      console.log(JSON.parse(JSON.stringify(prevTable)));
 
       function getInputTypeForGetPrevComp(inputTypeProp, mathProp) {
         return mathProp
@@ -395,6 +325,7 @@ function getPrevComp(obj) {
           : '';
       }
 
+      console.log('got to here 1');
       // check previous data, fill in useful data
       prevTable.data.hasData =
         // uncomment following line for original tables where students edit headers:
@@ -408,12 +339,11 @@ function getPrevComp(obj) {
           )
         );
         */
-        prevTable.data.rows.some((row) =>
-          row.some((cell) =>
-            getTextType(cell) === 'mixed' ? getMixed(mixedText) : value
-          )
-        );
-      prevTable.data.isComplete =
+        prevTable.data.rows.some((row) => row.some((cell) => getText(cell)));
+      console.log('got to here 2');
+      /*
+prevTable.data.isComplete =
+        //LEVI - REVISIT THIS SECTION
         // uncomment following line for original tables where students edit headers:
         //prevTable.data.columns.every(({ value }) => value) &&
         prevTable.data.rows.every((row) =>
@@ -423,6 +353,12 @@ function getPrevComp(obj) {
               : value
           )
         );
+*/
+
+      prevTable.data.isComplete = prevTable.data.rows.every((row) =>
+        row.every((cell) => getText(cell))
+      );
+      console.log('got to here 3');
       prevTable.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevTable.data.slideNum = slideNum;
       prevTable.data.flagText = prevTable.data.isComplete
@@ -537,4 +473,44 @@ function getTextType(obj) {
     console.log(obj);
   }
   return tempVal;
+}
+
+function getText(obj) {
+  switch (getTextType(obj)) {
+    case 'text':
+      return typeof obj.text !== 'undefined' ? obj.text : obj.value;
+    case 'math':
+      return `$${typeof obj.text !== 'undefined' ? obj.text : obj.value}$`;
+    case 'mixed':
+      return obj.mixedText[0]?.children
+        .map((child) => {
+          if (child.text) {
+            return child.text;
+          } else if (child.latex) {
+            return `$${child.latex}$`;
+          } else {
+            return '';
+          }
+        })
+        .filter((val) => !!val)
+        .join('');
+    default:
+      console.warn(
+        'In getText DID library function: Unexpected textType provided by getTextType DID library function for obj shown below'
+      );
+      console.log(obj);
+      return '';
+  }
+}
+
+function getFirstComponent(componentsArray) {
+  const allComps = Object.keys(componentsArray).sort();
+  const firstComp = allComps[0];
+  if (!firstComp) {
+    console.warn(
+      'Error in getPrevComp DID Library function: Unable to find a component in the getFirstComponent function'
+    );
+    return;
+  } // make sure at least 1 comp exists
+  return firstComp;
 }
