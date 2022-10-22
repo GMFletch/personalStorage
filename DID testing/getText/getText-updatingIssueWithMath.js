@@ -7,7 +7,6 @@
 
   future recommendations:
   1. if text type is changed programmatically, a potential error is introduced. If changing to or from math text but not changing math boolean as well as inputType, the text type will likely be returned with an erroneous result. Not sure that this function specifically should validate that potential error, but do want to note it.
-  2. returns that there is data in math '$$' even if there is no data
 */
 
 function getText(obj) {
