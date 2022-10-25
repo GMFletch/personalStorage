@@ -3,12 +3,21 @@
   1. for use with complextable, fillblank, geogebra, input, select, and table components
   2. defaults from most components have been removed; when doing library pass in the future, consideration will need to paid to account for these changes ('smoke test'); for example, when a default table is returned on a slide, that slide will need to prevent any functionality pushing data from the prevTable to a table on that slide - there will only be one row/cell returned, so assumptions that the returned table maps to a table on that slide will be faulty; similar concerns for complextable, fillblank, select, and table components
 
+  notes:
+  -fillblank-
+  1. added "processedInputs" in fillblank's data; it puts the student input from each blank into an array as either text, math (text surrounded by $$), or goBackString if the blank was left empty
+
   future recommendations:
-  -tables-
-  1. issue with getText returning data for math cells impacts table.data.hasData and table.data.isComplete
+  -table-
+  1. [RESOLVED WITH UPDATE TO getText] issue with getText returning data for math cells impacts table.data.hasData and table.data.isComplete
   2. potential issue with tables where students are able to edit headers; possible solution of checking columns if they are editable and then comparing/merging with results of rows
   3. consideration for tables; should flagText/goBackString be changed to something like "incomplete input on slide X" instead of "no input yet on slide X" when there is data, but just not complete?
-  4. work/help needed to update fillCells function for tables to take advantage of getText, getTextType, etc.
+  4. unsure of the specific use cases for getCell and fillCells; think some rework is needed to update those two functions for tables to take advantage of getText, getTextType, etc.
+  -fillblank-
+  1. unsure of the specific use cases for getInput; I (Levi) think the added "processedInputs" removes the need for this functionality
+  -complextable-
+  1. currently, does not have getCell and fillCells functions like original tables; would need to be built out in the future
+  2. currently, hasData and isComplete ignore header cells; consider if additional functionality should be built in to consider headers
 */
 
 //import getTextType from './getTextType'; // not used due to specific requirements for library - needs full object, but only math and inputType are passed here
@@ -21,14 +30,12 @@ const ID1 = 'slide-4cc0d50a863a';
 
 const constName = getPrevComp({
   slideID: ID1,
-  compName: 'table0',
-  compType: 'table',
+  compName: 'table2',
+  compType: 'complextable',
   utils,
   components,
 
   // Ignore the following options unless using specified component
-
-  fibNumInputs: (numFibInputs = 1), // ignore if not fib
   ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
 });
 
@@ -68,62 +75,93 @@ function getPrevComp(obj) {
   switch (compTypeToLower) {
     case 'complextable':
     case 'tablecomplex':
-      // NO EXISTING CODE FOR complextable. BE SURE TO DOUBLE CHECK/VERIFY FINAL CODE
-      const inpComplexTableSize = obj?.tableSize;
-      const inpComplexRows = inpComplexTableSize?.rows;
-      const inpComplexColumns = inpComplexTableSize?.columns;
-      // establish default in same data structure as original
       const defComplexTable = {
-        data: { rows: [], columns: [] },
+        data: { rows: [[]] },
         isDefault: true,
         type: 'complextable',
       };
-      const prevComplexTable =
-        utils.getFromSlide(slideID, compName, defComplexTable) ||
-        defComplexTable;
+
+      const defComplexRow = {
+        alignment: 'center',
+        ariaLabel: 'Please add text',
+        className: '',
+        colSpan: 1,
+        editable: true,
+        inputType: 'text',
+        math: true,
+        merged: false,
+        mixedText: [
+          {
+            type: 'paragraph',
+            children: [
+              {
+                text: '',
+              },
+            ],
+          },
+        ],
+        numberOfLines: '1',
+        rowSpan: 1,
+        scope: 'col',
+        showAreaToolTip: true,
+        type: 'singleline',
+        value: '',
+      };
+
+      defComplexTable.data.rows[0].push([defComplexRow]);
+
+      const prevComplexTable = JSON.parse(
+        JSON.stringify(
+          utils.getFromSlide(slideID, compName, defComplexTable) ||
+            defComplexTable
+        )
+      );
+      // console.log(prevComplexTable.data.rows[0][0].scope ===)
+
+      prevComplexTable.data.hasData = prevComplexTable.data.rows.some((row) =>
+        row.some((cell) =>
+          typeof cell.scope !== 'undefined' ? false : getText(cell)
+        )
+      );
+      prevComplexTable.data.isComplete = prevComplexTable.data.rows.every(
+        (row) =>
+          row.every((cell) =>
+            cell.merged || typeof cell.scope !== 'undefined'
+              ? true
+              : getText(cell)
+          )
+      );
+
+      prevComplexTable.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevComplexTable.data.slideNum = slideNum;
+      prevComplexTable.data.flagText = prevComplexTable.data.isComplete
+        ? ''
+        : prevComplexTable.data.goBackString;
+      // DID NOT BUILD OUT getCell AND fillCells like in original tables; potential addition for the future
+
       return { ...prevComplexTable };
     case 'fib':
     case 'fillblank':
-      const fibNumInputs = obj.fibNumInputs;
-      // establish default in same data structure as original
       const defFib = {
         data: { values: [] },
-        fibNumInputs,
         isDefault: true,
         type: 'fillblank',
       };
-      if (
-        typeof fibNumInputs !== 'number' ||
-        !Number.isInteger(fibNumInputs) ||
-        fibNumInputs < 0
-      ) {
-        console.warn(
-          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp includes property of fibNumInputs and has a value that is a positive integer (and is the correct number of inputs/blanks!).'
-        );
-        console.warn('argment passed to getPrevComp shown below');
-        console.log(obj);
-        console.warn('fibNumImputs passed to getPrevComp shown below');
-        console.log(fibNumInputs);
-        return;
-      }
-      const prelimFib = utils.getFromSlide(slideID, compName, defFib) || defFib;
-      const numInputs = !!prelimFib.data?.values?.length
-        ? prelimFib.data.values.length
-        : fibNumInputs;
-      for (let i = 0; i < numInputs; i++) {
-        defFib.data.values.push({ text: '', inputType: 'text' });
-      }
 
       // get previous data
-      const prevFib = utils.getFromSlide(slideID, compName, defFib) || defFib;
+      const prevFib = JSON.parse(
+        JSON.stringify(utils.getFromSlide(slideID, compName, defFib) || defFib)
+      );
+
+      const isDefault = prevFib.isDefault === true;
 
       // check previous data, fill in useful data
-      prevFib.data.hasData = prevFib.data.values.some(
-        ({ text, inputType }) => !!text
-      );
-      prevFib.data.isComplete = prevFib.data.values.every(
-        ({ text, inputType }) => !!text
-      );
+      prevFib.data.hasData = isDefault
+        ? false
+        : prevFib.data.values.some((blank) => getText(blank));
+      prevFib.data.isComplete = isDefault
+        ? false
+        : prevFib.data.values.every((blank) => getText(blank));
       prevFib.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevFib.data.slideNum = slideNum;
       prevFib.data.flagText = prevFib.data.isComplete
@@ -137,14 +175,20 @@ function getPrevComp(obj) {
           : emptyVal;
         return { ...this.data.values[position], text };
       };
+      // add array with processed inputs
+      prevFib.data.processedInputs = [];
+      prevFib.data.values.forEach((val) => {
+        const tempVal = getText(val);
+        prevFib.data.processedInputs.push(
+          tempVal === '' ? prevFib.data.goBackString : tempVal
+        );
+      });
 
       return { ...prevFib };
     case 'ggb':
     case 'geogebra':
       const ggbInnerData = obj.ggbInnerData;
       const storageComp = getFirstComponent(components);
-      // ADD IN STORAGE COMP HERE
-      // establish default in same data structure as original
       const defGGB = {
         data: {},
         innerData: ggbInnerData,
@@ -165,7 +209,9 @@ function getPrevComp(obj) {
       }
 
       // get previous data
-      const prevGGB = utils.getFromSlide(slideID, compName, false) || false;
+      const prevGGB = JSON.parse(
+        JSON.stringify(utils.getFromSlide(slideID, compName, false) || false)
+      );
 
       // check previous data
       const hasData = !prevGGB
@@ -204,7 +250,6 @@ function getPrevComp(obj) {
 
       return { ...returnGGB };
     case 'input':
-      // establish default in same data structure as original
       const defInput = {
         data: {
           text: '',
@@ -213,9 +258,11 @@ function getPrevComp(obj) {
         type: 'input',
       };
       // get previous data
-      const prevInput =
-        utils.getFromSlide(slideID, compName, defInput) || defInput;
-
+      const prevInput = JSON.parse(
+        JSON.stringify(
+          utils.getFromSlide(slideID, compName, defInput) || defInput
+        )
+      );
       // fill in other useful data
       prevInput.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevInput.data.hasData = !!prevInput.data.text;
@@ -230,7 +277,6 @@ function getPrevComp(obj) {
 
       return { ...prevInput };
     case 'select':
-      // establish default in same data structure as original
       const defSelect = {
         data: {
           selected: [],
@@ -240,8 +286,11 @@ function getPrevComp(obj) {
         type: 'select',
       };
       // get previous data
-      const prevSelect =
-        utils.getFromSlide(slideID, compName, defSelect) || defSelect;
+      const prevSelect = JSON.parse(
+        JSON.stringify(
+          utils.getFromSlide(slideID, compName, defSelect) || defSelect
+        )
+      );
       let selLabels = prevSelect.data.options
         .map((opt) => {
           if (prevSelect.data.selected.includes(opt.value)) {
@@ -305,60 +354,21 @@ function getPrevComp(obj) {
       defTable.data.rows.push([defRow]);
 
       // get previous data
-      const prevTable =
-        utils.getFromSlide(slideID, compName, defTable) || defTable;
+      const prevTable = JSON.parse(
+        JSON.stringify(
+          utils.getFromSlide(slideID, compName, defTable) || defTable
+        )
+      );
 
-      if (prevTable.isDefault) {
-        console.log('default table');
-        return prevTable;
-      }
-
-      console.log(JSON.parse(JSON.stringify(prevTable)));
-
-      function getInputTypeForGetPrevComp(inputTypeProp, mathProp) {
-        return mathProp
-          ? 'math'
-          : inputTypeProp === 'mixed'
-          ? 'mixed'
-          : inputTypeProp === 'text'
-          ? 'text'
-          : '';
-      }
-
-      console.log('got to here 1');
       // check previous data, fill in useful data
       prevTable.data.hasData =
+        // LEVI - REVISIT THIS - CAN I CHECK THIS FROM THE TABLE ITSELF?
         // uncomment following line for original tables where students edit headers:
-        //prevTable.data.columns.some(({ value }) => value) ||
-        /*
-        prevTable.data.rows.some((row) =>
-          row.some(({ value, mixedText, inputType, math }) =>
-            getInputTypeForGetPrevComp(inputType, math) === 'mixed'
-              ? getMixed(mixedText)
-              : value
-          )
-        );
-        */
+        // prevTable.data.columns.some(({ value }) => value) ||
         prevTable.data.rows.some((row) => row.some((cell) => getText(cell)));
-      console.log('got to here 2');
-      /*
-prevTable.data.isComplete =
-        //LEVI - REVISIT THIS SECTION
-        // uncomment following line for original tables where students edit headers:
-        //prevTable.data.columns.every(({ value }) => value) &&
-        prevTable.data.rows.every((row) =>
-          row.every(({ value, mixedText, inputType, math }) =>
-            getInputTypeForGetPrevComp(inputType, math) === 'mixed'
-              ? getMixed(mixedText)
-              : value
-          )
-        );
-*/
-
       prevTable.data.isComplete = prevTable.data.rows.every((row) =>
         row.every((cell) => getText(cell))
       );
-      console.log('got to here 3');
       prevTable.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevTable.data.slideNum = slideNum;
       prevTable.data.flagText = prevTable.data.isComplete
@@ -458,29 +468,22 @@ function getMixed(obj) {
     .join('');
 }
 
-function getTextType(obj) {
-  const tempVal = obj.math
-    ? 'math'
-    : obj.inputType === 'mixed'
-    ? 'mixed'
-    : obj.inputType === 'text'
-    ? 'text'
-    : '';
-  if (tempVal === '') {
-    console.warn(
-      'In getTextType DID library function: Unknown inputType for obj shown below'
-    );
-    console.log(obj);
-  }
-  return tempVal;
-}
-
 function getText(obj) {
   switch (getTextType(obj)) {
     case 'text':
-      return typeof obj.text !== 'undefined' ? obj.text : obj.value;
+      return typeof obj.text !== 'undefined'
+        ? obj.text.trim()
+        : obj.value.trim();
     case 'math':
-      return `$${typeof obj.text !== 'undefined' ? obj.text : obj.value}$`;
+      const tempText = obj.text?.trim();
+      const tempValue = obj.value?.trim();
+      return typeof tempText !== 'undefined'
+        ? tempText === ''
+          ? ''
+          : `$${tempText}$`
+        : tempValue === ''
+        ? ''
+        : `$${tempValue}$`;
     case 'mixed':
       return obj.mixedText[0]?.children
         .map((child) => {
@@ -501,6 +504,24 @@ function getText(obj) {
       console.log(obj);
       return '';
   }
+}
+
+function getTextType(obj) {
+  const tempVal =
+    obj.math || obj.inputType === 'math'
+      ? 'math'
+      : obj.inputType === 'mixed'
+      ? 'mixed'
+      : obj.inputType === 'text'
+      ? 'text'
+      : '';
+  if (tempVal === '') {
+    console.warn(
+      'In getTextType DID library function: Unknown inputType for obj shown below'
+    );
+    console.log(obj);
+  }
+  return tempVal;
 }
 
 function getFirstComponent(componentsArray) {

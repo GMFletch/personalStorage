@@ -12,10 +12,12 @@
 function getText(obj) {
   switch (getTextType(obj)) {
     case 'text':
-      return typeof obj.text !== 'undefined' ? obj.text : obj.value;
+      return typeof obj.text !== 'undefined'
+        ? obj.text.trim()
+        : obj.value.trim();
     case 'math':
-      const tempText = obj.text;
-      const tempValue = obj.value;
+      const tempText = obj.text?.trim();
+      const tempValue = obj.value?.trim();
       return typeof tempText !== 'undefined'
         ? tempText === ''
           ? ''
