@@ -30,8 +30,8 @@ const ID1 = 'slide-4cc0d50a863a';
 
 const constName = getPrevComp({
   slideID: ID1,
-  compName: 'table2',
-  compType: 'complextable',
+  compName: 'fib1',
+  compType: 'fib',
   utils,
   components,
 
@@ -176,12 +176,9 @@ function getPrevComp(obj) {
         return { ...this.data.values[position], text };
       };
       // add array with processed inputs
-      prevFib.data.processedInputs = [];
-      prevFib.data.values.forEach((val) => {
+      prevFib.data.processedInputs = prevFib.data.values.map((val) => {
         const tempVal = getText(val);
-        prevFib.data.processedInputs.push(
-          tempVal === '' ? prevFib.data.goBackString : tempVal
-        );
+        return tempVal === '' ? prevFib.data.goBackString : tempVal;
       });
 
       return { ...prevFib };
