@@ -26,6 +26,10 @@
 //import getData from '../getData'; // not used due to update for library - needs components
 //import saveData from '../saveData'; // not used due to update for library - needs components
 
+const { table1 } = components;
+
+const testingComps = ['', input2, input3];
+
 const ID1 = 'slide-4cc0d50a863a';
 
 const constName = getPrevComp({
