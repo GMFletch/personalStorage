@@ -26,16 +26,14 @@
 //import getData from '../getData'; // not used due to update for library - needs components
 //import saveData from '../saveData'; // not used due to update for library - needs components
 
-const { table1 } = components;
+const { text1, table1 } = components;
 
-const testingComps = ['', input2, input3];
+const ID1 = 'slide-a718de6e5cf6';
 
-const ID1 = 'slide-4cc0d50a863a';
-
-const constName = getPrevComp({
+const notThereComp = getPrevComp({
   slideID: ID1,
-  compName: 'fib1',
-  compType: 'fib',
+  compName: 'notThereComp',
+  compType: 'complextable',
   utils,
   components,
 
@@ -43,7 +41,47 @@ const constName = getPrevComp({
   ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
 });
 
-console.log(constName);
+const noDataTable = getPrevComp({
+  slideID: ID1,
+  compName: 'noDataTable',
+  compType: 'complextable',
+  utils,
+  components,
+
+  // Ignore the following options unless using specified component
+  ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
+});
+
+const partialDataTable = getPrevComp({
+  slideID: ID1,
+  compName: 'partialDataTable',
+  compType: 'complextable',
+  utils,
+  components,
+
+  // Ignore the following options unless using specified component
+  ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
+});
+
+const completeDataTable = getPrevComp({
+  slideID: ID1,
+  compName: 'completeDataTable',
+  compType: 'complextable',
+  utils,
+  components,
+
+  // Ignore the following options unless using specified component
+  ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
+});
+
+console.log('notThereComp');
+console.log(notThereComp);
+console.log('noDataTable');
+console.log(noDataTable);
+console.log('partialDataTable');
+console.log(partialDataTable);
+console.log('completeDataTable');
+console.log(completeDataTable);
 
 function getPrevComp(obj) {
   if (typeof obj !== 'object') {
@@ -80,39 +118,68 @@ function getPrevComp(obj) {
     case 'complextable':
     case 'tablecomplex':
       const defComplexTable = {
-        data: { rows: [[]] },
+        data: {
+          rows: [
+            [
+              {
+                alignment: 'center',
+                ariaLabel: 'Please add text',
+                className: '',
+                colSpan: 1,
+                editable: true,
+                inputType: 'text',
+                math: true,
+                merged: false,
+                mixedText: [
+                  {
+                    type: 'paragraph',
+                    children: [
+                      {
+                        text: '',
+                      },
+                    ],
+                  },
+                ],
+                numberOfLines: '1',
+                rowSpan: 1,
+                scope: 'col',
+                showAreaToolTip: true,
+                type: 'singleline',
+                value: '',
+              },
+            ],
+            [
+              {
+                alignment: 'center',
+                ariaLabel: 'Please add text',
+                className: '',
+                colSpan: 1,
+                editable: true,
+                inputType: 'text',
+                math: true,
+                merged: false,
+                mixedText: [
+                  {
+                    type: 'paragraph',
+                    children: [
+                      {
+                        text: '',
+                      },
+                    ],
+                  },
+                ],
+                numberOfLines: '1',
+                rowSpan: 1,
+                showAreaToolTip: true,
+                type: 'singleline',
+                value: '',
+              },
+            ],
+          ],
+        },
         isDefault: true,
         type: 'complextable',
       };
-
-      const defComplexRow = {
-        alignment: 'center',
-        ariaLabel: 'Please add text',
-        className: '',
-        colSpan: 1,
-        editable: true,
-        inputType: 'text',
-        math: true,
-        merged: false,
-        mixedText: [
-          {
-            type: 'paragraph',
-            children: [
-              {
-                text: '',
-              },
-            ],
-          },
-        ],
-        numberOfLines: '1',
-        rowSpan: 1,
-        scope: 'col',
-        showAreaToolTip: true,
-        type: 'singleline',
-        value: '',
-      };
-
-      defComplexTable.data.rows[0].push([defComplexRow]);
 
       const prevComplexTable = JSON.parse(
         JSON.stringify(
@@ -120,21 +187,26 @@ function getPrevComp(obj) {
             defComplexTable
         )
       );
-      // console.log(prevComplexTable.data.rows[0][0].scope ===)
 
-      prevComplexTable.data.hasData = prevComplexTable.data.rows.some((row) =>
-        row.some((cell) =>
-          typeof cell.scope !== 'undefined' ? false : getText(cell)
-        )
-      );
-      prevComplexTable.data.isComplete = prevComplexTable.data.rows.every(
-        (row) =>
-          row.every((cell) =>
-            cell.merged || typeof cell.scope !== 'undefined'
-              ? true
-              : getText(cell)
-          )
-      );
+      const tempArray = [];
+      for (let i = 0, L = prevComplexTable.data.rows.length; i < L; i++) {
+        for (
+          let j = 0, Lj = prevComplexTable.data.rows[i].length;
+          j < Lj;
+          j++
+        ) {
+          tempArray.push(prevComplexTable.data.rows[i][j]);
+        }
+      }
+
+      prevComplexTable.data.hasData = tempArray.some((cell) => {
+        return typeof cell.scope !== 'undefined' ? false : getText(cell);
+      });
+      prevComplexTable.data.isComplete = tempArray.every((cell) => {
+        return cell.merged || typeof cell.scope !== 'undefined'
+          ? true
+          : getText(cell);
+      });
 
       prevComplexTable.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevComplexTable.data.slideNum = slideNum;
