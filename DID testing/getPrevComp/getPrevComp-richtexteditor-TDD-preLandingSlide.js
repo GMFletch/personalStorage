@@ -99,7 +99,7 @@ completeDataTest(completeDataComp, tablesArr[3]);
 
 function defaultTest(tempComp, table) {
   table.updateCell(0, 1, {
-    value: tempComp.isDefault ? 'pass' : 'FAIL',
+    value: tempComp?.isDefault ? 'pass' : 'FAIL',
     className: tempComp?.isDefault ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(1, 1, {
@@ -143,10 +143,9 @@ function noInputsTest(tempComp, table) {
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(1, 1, {
-    value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
-    className: tempComp.hasOwnProperty('localData')
-      ? 'bg-success'
-      : 'bg-danger',
+    value: typeof tempComp.localData === 'undefined' ? 'pass' : 'FAIL',
+    className:
+      typeof tempComp.localData === 'undefined' ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(2, 1, {
     value:
@@ -167,12 +166,12 @@ function noInputsTest(tempComp, table) {
         : 'bg-danger',
   });
   table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
+    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
+    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
 }
 
@@ -183,10 +182,9 @@ function noDataTest(tempComp, table) {
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(1, 1, {
-    value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
-    className: tempComp.hasOwnProperty('localData')
-      ? 'bg-success'
-      : 'bg-danger',
+    value: typeof tempComp.localData === 'undefined' ? 'pass' : 'FAIL',
+    className:
+      typeof tempComp.localData === 'undefined' ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(2, 1, {
     value:
@@ -223,10 +221,9 @@ function partialDataTest(tempComp, table) {
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(1, 1, {
-    value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
-    className: tempComp.hasOwnProperty('localData')
-      ? 'bg-success'
-      : 'bg-danger',
+    value: typeof tempComp.localData === 'undefined' ? 'pass' : 'FAIL',
+    className:
+      typeof tempComp.localData === 'undefined' ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(2, 1, {
     value:
@@ -247,10 +244,10 @@ function partialDataTest(tempComp, table) {
         : 'bg-danger',
   });
   table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
+    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
+  table3.updateCell(4, 1, {
     value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
@@ -263,10 +260,9 @@ function completeDataTest(tempComp, table) {
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(1, 1, {
-    value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
-    className: tempComp.hasOwnProperty('localData')
-      ? 'bg-success'
-      : 'bg-danger',
+    value: typeof tempComp.localData === 'undefined' ? 'pass' : 'FAIL',
+    className:
+      typeof tempComp.localData === 'undefined' ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(2, 1, {
     value:
@@ -287,11 +283,11 @@ function completeDataTest(tempComp, table) {
         : 'bg-danger',
   });
   table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
+    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
   table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
+    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
 }

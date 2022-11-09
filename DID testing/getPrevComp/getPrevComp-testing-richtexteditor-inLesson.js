@@ -28,12 +28,12 @@
 
 const { text1, table1 } = components;
 
-const ID1 = 'slide-a718de6e5cf6';
+const ID1 = 'slide-8e9576a6366f';
 
 const notThereComp = getPrevComp({
   slideID: ID1,
   compName: 'notThereComp',
-  compType: 'complextable',
+  compType: 'richtexteditor',
   utils,
   components,
 
@@ -41,10 +41,10 @@ const notThereComp = getPrevComp({
   ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
 });
 
-const noDataTable = getPrevComp({
+const noDataRTE = getPrevComp({
   slideID: ID1,
-  compName: 'noDataTable',
-  compType: 'complextable',
+  compName: 'noDataRTE',
+  compType: 'richtexteditor',
   utils,
   components,
 
@@ -52,10 +52,10 @@ const noDataTable = getPrevComp({
   ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
 });
 
-const partialDataTable = getPrevComp({
+const partialDataRTE = getPrevComp({
   slideID: ID1,
-  compName: 'partialDataTable',
-  compType: 'complextable',
+  compName: 'partialDataRTE',
+  compType: 'richtexteditor',
   utils,
   components,
 
@@ -63,10 +63,10 @@ const partialDataTable = getPrevComp({
   ggbInnerData: { exampleVal1: 1, exampleVal2: 2 }, // ignore if not ggb
 });
 
-const completeDataTable = getPrevComp({
+const completeDataRTE = getPrevComp({
   slideID: ID1,
-  compName: 'completeDataTable',
-  compType: 'complextable',
+  compName: 'completeDataRTE',
+  compType: 'richtexteditor',
   utils,
   components,
 
@@ -76,12 +76,12 @@ const completeDataTable = getPrevComp({
 
 console.log('notThereComp');
 console.log(notThereComp);
-console.log('noDataTable');
-console.log(noDataTable);
-console.log('partialDataTable');
-console.log(partialDataTable);
-console.log('completeDataTable');
-console.log(completeDataTable);
+console.log('noDataRTE');
+console.log(noDataRTE);
+console.log('partialDataRTE');
+console.log(partialDataRTE);
+console.log('completeDataRTE');
+console.log(completeDataRTE);
 
 function getPrevComp(obj) {
   if (typeof obj !== 'object') {
@@ -349,6 +349,40 @@ function getPrevComp(obj) {
         : prevInput.data.goBackString;
 
       return { ...prevInput };
+    case 'richtexteditor': {
+      const defRTE = {
+        data: {
+          text: '',
+        },
+        isDefault: true,
+        type: 'richtexteditor',
+        localData: { inputs: [] },
+      };
+
+      // get previous data
+      const prevRTE = JSON.parse(
+        JSON.stringify(utils.getFromSlide(slideID, compName, defRTE) || defRTE)
+      );
+
+      // fill in other useful data
+      prevRTE.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevRTE.data.inputs = prevRTE.localData.inputs.map((blank) =>
+        getText(blank)
+      );
+      const tempInputs = prevRTE.data.inputs;
+      prevRTE.data.hasData =
+        tempInputs.length === 0 ? true : tempInputs.some((input) => input);
+      prevRTE.data.isComplete =
+        tempInputs.length === 0 ? true : tempInputs.every((input) => input);
+      prevRTE.data.slideNum = slideNum;
+
+      // set text values
+      prevRTE.data.flagText = prevRTE.data.isComplete
+        ? ''
+        : prevRTE.data.goBackString;
+
+      return { ...prevRTE };
+    }
     case 'select':
       const defSelect = {
         data: {
