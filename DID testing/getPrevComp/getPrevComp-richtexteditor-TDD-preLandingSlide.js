@@ -98,16 +98,19 @@ completeDataTest(completeDataComp, tablesArr[3]);
 // console.log('end of tests');
 
 function defaultTest(tempComp, table) {
+  // isDefault: true
   table.updateCell(0, 1, {
     value: tempComp?.isDefault ? 'pass' : 'FAIL',
     className: tempComp?.isDefault ? 'bg-success' : 'bg-danger',
   });
+  // does NOT have localData
   table.updateCell(1, 1, {
-    value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
-    className: tempComp.hasOwnProperty('localData')
+    value: !tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
+    className: !tempComp.hasOwnProperty('localData')
       ? 'bg-success'
       : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -126,27 +129,32 @@ function defaultTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
+    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === false
   table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
+    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
 }
 
 function noInputsTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // does NOT have localData
   table.updateCell(1, 1, {
     value: typeof tempComp.localData === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.localData === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -165,10 +173,12 @@ function noInputsTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === false
   table.updateCell(4, 1, {
     value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
@@ -176,16 +186,19 @@ function noInputsTest(tempComp, table) {
 }
 
 function noDataTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // does NOT have localData
   table.updateCell(1, 1, {
     value: typeof tempComp.localData === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.localData === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -204,10 +217,12 @@ function noDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === false
   table.updateCell(4, 1, {
     value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
@@ -215,16 +230,19 @@ function noDataTest(tempComp, table) {
 }
 
 function partialDataTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // does NOT have localData
   table.updateCell(1, 1, {
     value: typeof tempComp.localData === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.localData === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -243,10 +261,12 @@ function partialDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === false
   table3.updateCell(4, 1, {
     value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
@@ -254,16 +274,19 @@ function partialDataTest(tempComp, table) {
 }
 
 function completeDataTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // does NOT have localData
   table.updateCell(1, 1, {
     value: typeof tempComp.localData === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.localData === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -282,10 +305,12 @@ function completeDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === false
   table.updateCell(4, 1, {
     value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
@@ -582,7 +607,7 @@ function getPrevComp(obj) {
         },
         isDefault: true,
         type: 'richtexteditor',
-        localData: { inputs: [] },
+        // localData: { inputs: [] },
       };
 
       // get previous data
@@ -592,21 +617,27 @@ function getPrevComp(obj) {
 
       // fill in other useful data
       prevRTE.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      const goBackString = prevRTE.data.goBackString;
       const noLocalData = typeof prevRTE?.localData?.inputs === 'undefined';
       prevRTE.data.inputs = noLocalData
         ? []
-        : prevRTE.localData.inputs.map((blank) => getText(blank));
-      const tempInputs = prevRTE.data.inputs;
-      prevRTE.data.hasData = noLocalData
-        ? false
-        : tempInputs.length === 0
-        ? true
-        : tempInputs.some((input) => input);
-      prevRTE.data.isComplete = noLocalData
-        ? false
-        : tempInputs.length === 0
-        ? true
-        : tempInputs.every((input) => input);
+        : prevRTE.localData.inputs.map((blank) => {
+            const tempVal = getText(blank);
+            return !!tempVal ? tempVal : goBackString;
+          });
+      const tempInputs = prevRTE?.localData?.inputs;
+      prevRTE.data.hasData =
+        noLocalData || prevRTE.isDefault
+          ? false
+          : tempInputs.length === 0
+          ? true
+          : tempInputs.some((input) => getText(input));
+      prevRTE.data.isComplete =
+        noLocalData || prevRTE.isDefault
+          ? false
+          : tempInputs.length === 0
+          ? true
+          : tempInputs.every((input) => getText(input));
       prevRTE.data.slideNum = slideNum;
 
       // set text values

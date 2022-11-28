@@ -257,6 +257,7 @@ function getPrevComp(obj) {
       const defInput = {
         data: {
           text: '',
+          inputType: 'text',
         },
         isDefault: true,
         type: 'input',
@@ -268,16 +269,31 @@ function getPrevComp(obj) {
         )
       );
       // fill in other useful data
+      console.log('compName');
+      console.log(compName);
+      console.log('prevInput');
+      console.log(prevInput);
       prevInput.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
-      prevInput.data.hasData = !!prevInput.data.text;
+      prevInput.data.hasData = prevInput?.isDefault
+        ? false
+        : !!getText(prevInput.data);
+      const hasData = prevInput.data.hasData;
       prevInput.data.slideNum = slideNum;
-      // set text values
-      prevInput.data.text = prevInput.data.hasData
-        ? prevInput.data.text
-        : prevInput.data.goBackString;
+      // set text values if no data
+      if (!prevInput.data.hasData) {
+        // if mixed, put goBackString in data.mixedText[0].children[0].text
+        if (prevInput.data.inputType === 'mixed') {
+          prevInput.data.mixedText[0].children[0].text =
+            prevInput.data.goBackString.slice();
+        }
+        // if text or math, put goBackString in data.text
+        else {
+          prevInput.data.text = prevInput.data.goBackString.slice();
+        }
+      }
       prevInput.data.flagText = prevInput.data.hasData
         ? ''
-        : prevInput.data.goBackString;
+        : prevInput.data.goBackString.slice();
 
       return { ...prevInput };
     }
@@ -288,7 +304,7 @@ function getPrevComp(obj) {
         },
         isDefault: true,
         type: 'richtexteditor',
-        localData: { inputs: [] },
+        // localData: { inputs: [] },
       };
 
       // get previous data
@@ -300,19 +316,6 @@ function getPrevComp(obj) {
       prevRTE.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       const goBackString = prevRTE.data.goBackString;
       const noLocalData = typeof prevRTE?.localData?.inputs === 'undefined';
-      console.log('logs');
-      if (typeof prevRTE?.localData?.inputs[0] !== 'undefined') {
-        console.log('logs [0]');
-        console.log(prevRTE.localData.inputs[0]);
-        console.log(getText(prevRTE.localData.inputs[0]));
-        console.log(!!getText(prevRTE.localData.inputs[0]));
-      }
-      if (typeof prevRTE?.localData?.inputs[1] !== 'undefined') {
-        console.log('logs [1]');
-        console.log(prevRTE.localData.inputs[1]);
-        console.log(getText(prevRTE.localData.inputs[1]));
-        console.log(!!getText(prevRTE.localData.inputs[1]));
-      }
       prevRTE.data.inputs = noLocalData
         ? []
         : prevRTE.localData.inputs.map((blank) => {
@@ -325,13 +328,13 @@ function getPrevComp(obj) {
           ? false
           : tempInputs.length === 0
           ? true
-          : tempInputs.some((input) => input);
+          : tempInputs.some((input) => getText(input));
       prevRTE.data.isComplete =
         noLocalData || prevRTE.isDefault
           ? false
           : tempInputs.length === 0
           ? true
-          : tempInputs.every((input) => input);
+          : tempInputs.every((input) => getText(input));
       prevRTE.data.slideNum = slideNum;
 
       // set text values
@@ -521,12 +524,11 @@ function getMixed(obj) {
 
 function getText(obj) {
   switch (getTextType(obj)) {
-    case 'text': {
+    case 'text':
       return typeof obj.text !== 'undefined'
         ? obj.text.trim()
         : obj.value.trim();
-    }
-    case 'math': {
+    case 'math':
       const tempText = obj.text?.trim();
       const tempValue = obj.value?.trim();
       return typeof tempText !== 'undefined'
@@ -536,8 +538,7 @@ function getText(obj) {
         : tempValue === ''
         ? ''
         : `$${tempValue}$`;
-    }
-    case 'mixed': {
+    case 'mixed':
       return obj.mixedText[0]?.children
         .map((child) => {
           if (child.text) {
@@ -550,20 +551,16 @@ function getText(obj) {
         })
         .filter((val) => !!val)
         .join('');
-    }
-    default: {
+    default:
       console.warn(
         'In getText DID library function: Unexpected textType provided by getTextType DID library function for obj shown below'
       );
       console.log(obj);
       return '';
-    }
   }
 }
 
 function getTextType(obj) {
-  console.log('getTextType');
-  console.log(obj);
   const tempVal =
     obj.math || obj.inputType === 'math'
       ? 'math'

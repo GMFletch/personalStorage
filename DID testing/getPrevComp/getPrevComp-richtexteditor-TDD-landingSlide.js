@@ -98,16 +98,19 @@ completeDataTest(completeDataComp, tablesArr[3]);
 // console.log('end of tests');
 
 function defaultTest(tempComp, table) {
+  // isDefault: true
   table.updateCell(0, 1, {
     value: tempComp.isDefault ? 'pass' : 'FAIL',
     className: tempComp?.isDefault ? 'bg-success' : 'bg-danger',
   });
+  //does NOT have localData
   table.updateCell(1, 1, {
-    value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
-    className: tempComp.hasOwnProperty('localData')
+    value: !tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
+    className: !tempComp.hasOwnProperty('localData')
       ? 'bg-success'
       : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -126,14 +129,17 @@ function defaultTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
+    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === false
   table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
+    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
+  // data.inputs is empty array
   table.updateCell(5, 1, {
     value: tempComp.data.inputs.length === 0 ? 'pass' : 'FAIL',
     className: tempComp.data.inputs.length === 0 ? 'bg-success' : 'bg-danger',
@@ -142,16 +148,19 @@ function defaultTest(tempComp, table) {
 
 function noInputsTest(tempComp, table) {
   table.updateCell(0, 1, {
+    // returned table does not have isDefault property
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // has localData
   table.updateCell(1, 1, {
     value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
     className: tempComp.hasOwnProperty('localData')
       ? 'bg-success'
       : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -170,14 +179,17 @@ function noInputsTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === true
   table.updateCell(3, 1, {
     value: tempComp.data.hasData ? 'pass' : 'FAIL',
     className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === true
   table.updateCell(4, 1, {
     value: tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
+  // data.inputs is empty array
   table.updateCell(5, 1, {
     value: tempComp.data.inputs.length === 0 ? 'pass' : 'FAIL',
     className: tempComp.data.inputs.length === 0 ? 'bg-success' : 'bg-danger',
@@ -185,17 +197,20 @@ function noInputsTest(tempComp, table) {
 }
 
 function noDataTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // has localData
   table.updateCell(1, 1, {
     value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
     className: tempComp.hasOwnProperty('localData')
       ? 'bg-success'
       : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -214,14 +229,17 @@ function noDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === false
   table.updateCell(4, 1, {
     value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
+  // data.inputs is goBackString, goBackString
   table.updateCell(5, 1, {
     value:
       tempComp.data.inputs[0] === tempComp.data.goBackString &&
@@ -237,17 +255,20 @@ function noDataTest(tempComp, table) {
 }
 
 function partialDataTest(tempComp, table) {
+  //  does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // has localData
   table.updateCell(1, 1, {
     value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
     className: tempComp.hasOwnProperty('localData')
       ? 'bg-success'
       : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -266,14 +287,17 @@ function partialDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === true
   table.updateCell(3, 1, {
     value: tempComp.data.hasData ? 'pass' : 'FAIL',
     className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === false
   table.updateCell(4, 1, {
     value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
+  // data.inputs is '$1$', goBackString
   table.updateCell(5, 1, {
     value:
       tempComp.data.inputs[0] === '$1$' &&
@@ -289,17 +313,20 @@ function partialDataTest(tempComp, table) {
 }
 
 function completeDataTest(tempComp, table) {
+  //  does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // has localData
   table.updateCell(1, 1, {
     value: tempComp.hasOwnProperty('localData') ? 'pass' : 'FAIL',
     className: tempComp.hasOwnProperty('localData')
       ? 'bg-success'
       : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -318,14 +345,17 @@ function completeDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === true
   table.updateCell(3, 1, {
     value: tempComp.data.hasData ? 'pass' : 'FAIL',
     className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
+  // data.isComplete === true
   table.updateCell(4, 1, {
     value: tempComp.data.isComplete ? 'pass' : 'FAIL',
     className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
+  // data.inputs is '$1$', '2'
   table.updateCell(5, 1, {
     value:
       tempComp.data.inputs[0] === '$1$' && tempComp.data.inputs[1] === '2'
@@ -628,7 +658,7 @@ function getPrevComp(obj) {
         },
         isDefault: true,
         type: 'richtexteditor',
-        localData: { inputs: [] },
+        // localData: { inputs: [] },
       };
 
       // get previous data
@@ -640,19 +670,6 @@ function getPrevComp(obj) {
       prevRTE.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       const goBackString = prevRTE.data.goBackString;
       const noLocalData = typeof prevRTE?.localData?.inputs === 'undefined';
-      console.log('logs');
-      if (typeof prevRTE?.localData?.inputs[0] !== 'undefined') {
-        console.log('logs [0]');
-        console.log(prevRTE.localData.inputs[0]);
-        console.log(getText(prevRTE.localData.inputs[0]));
-        console.log(!!getText(prevRTE.localData.inputs[0]));
-      }
-      if (typeof prevRTE?.localData?.inputs[1] !== 'undefined') {
-        console.log('logs [1]');
-        console.log(prevRTE.localData.inputs[1]);
-        console.log(getText(prevRTE.localData.inputs[1]));
-        console.log(!!getText(prevRTE.localData.inputs[1]));
-      }
       prevRTE.data.inputs = noLocalData
         ? []
         : prevRTE.localData.inputs.map((blank) => {
@@ -665,13 +682,13 @@ function getPrevComp(obj) {
           ? false
           : tempInputs.length === 0
           ? true
-          : tempInputs.some((input) => input);
+          : tempInputs.some((input) => getText(input));
       prevRTE.data.isComplete =
         noLocalData || prevRTE.isDefault
           ? false
           : tempInputs.length === 0
           ? true
-          : tempInputs.every((input) => input);
+          : tempInputs.every((input) => getText(input));
       prevRTE.data.slideNum = slideNum;
 
       // set text values
@@ -902,8 +919,6 @@ function getText(obj) {
 }
 
 function getTextType(obj) {
-  console.log('getTextType');
-  console.log(obj);
   const tempVal =
     obj.math || obj.inputType === 'math'
       ? 'math'
