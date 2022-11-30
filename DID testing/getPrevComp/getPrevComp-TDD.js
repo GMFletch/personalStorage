@@ -1,7 +1,7 @@
 // import getText from './getText';
 // import getMixed from './getMixed';
-// import getData from './getData'; // not used due to update for library - needs components
-// import saveData from './saveData'; // not used due to update for library - needs components
+// import getData from './getData';
+// import saveData from './saveData';
 
 function getPrevComp(obj) {
   if (typeof obj !== 'object') {
