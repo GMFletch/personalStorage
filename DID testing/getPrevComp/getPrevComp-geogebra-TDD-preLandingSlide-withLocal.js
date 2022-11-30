@@ -1,113 +1,93 @@
-const {
-  text1,
-  text2,
-  text3,
-  text4,
-  text5,
-  table1,
-  table2,
-  table3,
-  table4,
-  table2a,
-} = components;
+const { text0, text1, text2, text3, table1, table2, table3 } = components;
 
-const ID1 = 'slide-7e97af503a44';
-const compType = 'fillblank';
-const compAbr = 'FIB';
+const ID1 = 'slide-41365e0aafee';
+const compType = 'geogebra';
+const compAbr = 'GGB';
 
 const otherSlideNum = utils.getSlideNum(ID1);
-const compStateArray = [
-  'default',
-  'noData',
-  'partialData',
-  'completeData',
-  'noInputs',
-];
-const tablesArr = [table1, table2, table3, table4, table2a];
+const compStateArray = ['default', 'noInteraction', 'movedPoint'];
+const tablesArr = [table1, table2, table3];
+
+console.log('start');
 
 const defaultComp = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[0].concat(compAbr),
+  compName: 'compNotThere',
   compType: compType,
   utils,
   components,
+
+  // Ignore the following options unless using specified component
+  ggbInnerDataDefault: { xValForA: 3, yValForA: 4 }, // ignore if not ggb
 });
 
 console.log('defaultComp');
 console.log(defaultComp);
 
-const noInputsComp = getPrevComp({
-  slideID: ID1,
-  compName: compStateArray[4].concat(compAbr),
-  compType: compType,
-  utils,
-  components,
-});
-
-console.log('noInputsComp');
-console.log(noInputsComp);
-
-const noDataComp = getPrevComp({
+const noInteraction = getPrevComp({
   slideID: ID1,
   compName: compStateArray[1].concat(compAbr),
   compType: compType,
   utils,
   components,
+
+  // Ignore the following options unless using specified component
+  ggbInnerDataDefault: { xValForA: 3, yValForA: 4 }, // ignore if not ggb
 });
 
-console.log('noDataComp');
-console.log(noDataComp);
+console.log('noInteraction');
+console.log(noInteraction);
 
-const partialDataComp = getPrevComp({
+const movedPoint = getPrevComp({
   slideID: ID1,
   compName: compStateArray[2].concat(compAbr),
   compType: compType,
   utils,
   components,
+
+  // Ignore the following options unless using specified component
+  ggbInnerDataDefault: { xValForA: 3, yValForA: 4 }, // ignore if not ggb
 });
 
-console.log('partialDataComp');
-console.log(partialDataComp);
-
-const completeDataComp = getPrevComp({
-  slideID: ID1,
-  compName: compStateArray[3].concat(compAbr),
-  compType: compType,
-  utils,
-  components,
-});
-
-console.log('completeDataComp');
-console.log(completeDataComp);
+console.log('movedPoint');
+console.log(movedPoint);
 
 // console.log('defaultTest start');
 defaultTest(defaultComp, tablesArr[0]);
 
-// console.log('noInputsTest start');
-noInputsTest(noInputsComp, tablesArr[4]);
+// console.log('noInteractionTest start');
+noInteractionTest(noInteraction, tablesArr[1]);
 
-// console.log('noDataTest start');
-noDataTest(noDataComp, tablesArr[1]);
+// console.log('movedPointTest start');
+movedPointTest(movedPoint, tablesArr[2]);
 
-// console.log('partialDataTest start');
-partialDataTest(partialDataComp, tablesArr[2]);
-
-// console.log('completeDataTest start');
-completeDataTest(completeDataComp, tablesArr[3]);
-
-// console.log('end of tests');
+console.log('end of tests');
 
 function defaultTest(tempComp, table) {
+  // isDefault: true
   table.updateCell(0, 1, {
     value: tempComp.isDefault ? 'pass' : 'FAIL',
     className: tempComp?.isDefault ? 'bg-success' : 'bg-danger',
   });
+  // typeof innerData !== 'undefined'
   table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.length === 0 ? 'pass' : 'FAIL',
+    value: typeof tempComp.innerData !== 'undefined' ? 'pass' : 'FAIL',
     className:
-      tempComp.data.processedInputs.length === 0 ? 'bg-success' : 'bg-danger',
+      typeof tempComp.innerData !== 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // innerData.xValForA === 3 && innerData.yValForA === 4
   table.updateCell(2, 1, {
+    value:
+      tempComp.innerData.xValForA === 3 && tempComp.innerData.yValForA === 4
+        ? 'pass'
+        : 'FAIL',
+    className:
+      tempComp.innerData.xValForA === 3 && tempComp.innerData.yValForA === 4
+        ? 'bg-success'
+        : 'bg-danger',
+  });
+  // goBackString
+  table.updateCell(3, 1, {
     value:
       tempComp.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
@@ -125,28 +105,38 @@ function defaultTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
-  table.updateCell(3, 1, {
+  // data.hasData === false
+  table.updateCell(4, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
 }
 
-function noInputsTest(tempComp, table) {
+function noInteractionTest(tempComp, table) {
+  // isDefault: false
   table.updateCell(0, 1, {
-    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
-    className:
-      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
+    value: !tempComp.isDefault ? 'pass' : 'FAIL',
+    className: !tempComp?.isDefault ? 'bg-success' : 'bg-danger',
   });
+  // typeof innerData !== 'undefined'
   table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.length === 0 ? 'pass' : 'FAIL',
+    value: typeof tempComp.innerData !== 'undefined' ? 'pass' : 'FAIL',
     className:
-      tempComp.data.processedInputs.length === 0 ? 'bg-success' : 'bg-danger',
+      typeof tempComp.innerData !== 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // innerData.xValForA === 3 && innerData.yValForA === 4
   table.updateCell(2, 1, {
+    value:
+      tempComp.innerData.xValForA === 3 && tempComp.innerData.yValForA === 4
+        ? 'pass'
+        : 'FAIL',
+    className:
+      tempComp.innerData.xValForA === 3 && tempComp.innerData.yValForA === 4
+        ? 'bg-success'
+        : 'bg-danger',
+  });
+  // goBackString
+  table.updateCell(3, 1, {
     value:
       tempComp.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
@@ -164,47 +154,38 @@ function noInputsTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
-  table.updateCell(3, 1, {
+  // data.hasData === false
+  table.updateCell(4, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
 }
 
-function noDataTest(tempComp, table) {
+function movedPointTest(tempComp, table) {
+  // isDefault: false
   table.updateCell(0, 1, {
-    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
-    className:
-      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
+    value: !tempComp.isDefault ? 'pass' : 'FAIL',
+    className: !tempComp?.isDefault ? 'bg-success' : 'bg-danger',
   });
+  // typeof innerData !== 'undefined'
   table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.every((el) => {
-      return (
-        el ===
-        '$\\color{707070}\\text{[no input yet on slide '.concat(
-          otherSlideNum,
-          ']}$'
-        )
-      );
-    })
-      ? 'pass'
-      : 'FAIL',
-    className: tempComp.data.processedInputs.every((el) => {
-      return (
-        el ===
-        '$\\color{707070}\\text{[no input yet on slide '.concat(
-          otherSlideNum,
-          ']}$'
-        )
-      );
-    })
-      ? 'bg-success'
-      : 'bg-danger',
+    value: typeof tempComp.innerData !== 'undefined' ? 'pass' : 'FAIL',
+    className:
+      typeof tempComp.innerData !== 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // innerData.xValForA === 3 && innerData.yValForA === 4
   table.updateCell(2, 1, {
+    value:
+      tempComp.innerData.xValForA === 3 && tempComp.innerData.yValForA === 4
+        ? 'pass'
+        : 'FAIL',
+    className:
+      tempComp.innerData.xValForA === 3 && tempComp.innerData.yValForA === 4
+        ? 'bg-success'
+        : 'bg-danger',
+  });
+  // goBackString
+  table.updateCell(3, 1, {
     value:
       tempComp.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
@@ -222,105 +203,10 @@ function noDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
-  table.updateCell(3, 1, {
+  // data.hasData === false
+  table.updateCell(4, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
-  });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
-}
-
-function partialDataTest(tempComp, table) {
-  table.updateCell(0, 1, {
-    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
-    className:
-      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
-  });
-  table.updateCell(1, 1, {
-    value:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === tempComp.data.goBackString
-        ? 'pass'
-        : 'FAIL',
-    className:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === tempComp.data.goBackString
-        ? 'bg-success'
-        : 'bg-danger',
-  });
-  table.updateCell(2, 1, {
-    value:
-      tempComp.data.goBackString ===
-      '$\\color{707070}\\text{[no input yet on slide '.concat(
-        otherSlideNum,
-        ']}$'
-      )
-        ? 'pass'
-        : 'FAIL',
-    className:
-      tempComp.data.goBackString ===
-      '$\\color{707070}\\text{[no input yet on slide '.concat(
-        otherSlideNum,
-        ']}$'
-      )
-        ? 'bg-success'
-        : 'bg-danger',
-  });
-  table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
-  });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
-}
-
-function completeDataTest(tempComp, table) {
-  table.updateCell(0, 1, {
-    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
-    className:
-      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
-  });
-  table.updateCell(1, 1, {
-    value:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === '$2$'
-        ? 'pass'
-        : 'FAIL',
-    className:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === '$2$'
-        ? 'bg-success'
-        : 'bg-danger',
-  });
-  table.updateCell(2, 1, {
-    value:
-      tempComp.data.goBackString ===
-      '$\\color{707070}\\text{[no input yet on slide '.concat(
-        otherSlideNum,
-        ']}$'
-      )
-        ? 'pass'
-        : 'FAIL',
-    className:
-      tempComp.data.goBackString ===
-      '$\\color{707070}\\text{[no input yet on slide '.concat(
-        otherSlideNum,
-        ']}$'
-      )
-        ? 'bg-success'
-        : 'bg-danger',
-  });
-  table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
-  });
-  table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
   });
 }
 
@@ -486,7 +372,7 @@ function getPrevComp(obj) {
     }
     case 'ggb':
     case 'geogebra': {
-      const ggbInnerData = obj.ggbInnerData;
+      const ggbInnerDataDefault = obj.ggbInnerDataDefault;
       const storageComp = (function () {
         const allComps = Object.keys(components).sort();
         const firstComp = allComps[0];
@@ -500,42 +386,48 @@ function getPrevComp(obj) {
       })();
       const defGGB = {
         data: {},
-        innerData: ggbInnerData,
+        innerData: ggbInnerDataDefault,
         isDefault: true,
         type: 'geogebra',
       };
-      if (typeof ggbInnerData !== 'object') {
+      if (typeof ggbInnerDataDefault !== 'object') {
         console.warn(
-          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp includes property of ggbInnerData and that it is an object that includes your desired innerData.'
+          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp includes property of ggbInnerDataDefault and that it is an object that includes your desired innerData.'
         );
         console.warn('argment passed to getPrevComp shown below');
         console.log(obj);
-        console.warn('ggbInnerData passed to getPrevComp shown below');
-        console.log(ggbInnerData);
-        console.warn('typeof ggbInnerData passed to getPrevComp shown below');
-        console.log(typeof ggbInnerData);
+        console.warn('ggbInnerDataDefault passed to getPrevComp shown below');
+        console.log(ggbInnerDataDefault);
+        console.warn(
+          'typeof ggbInnerDataDefault passed to getPrevComp shown below'
+        );
+        console.log(typeof ggbInnerDataDefault);
         return;
       }
 
       // get previous data
-      const prevGGB = JSON.parse(
-        JSON.stringify(utils.getFromSlide(slideID, compName, false) || false)
+      let prevGGB = JSON.parse(
+        JSON.stringify(utils.getFromSlide(slideID, compName, defGGB) || defGGB)
       );
 
       // check previous data - if any of the checks are truthy, hasData is true; else it is false
-      const hasData = !!(
-        prevGGB ||
-        Object.keys(prevGGB).includes('innerData') ||
-        Object.keys(prevGGB.innerData).length
-      );
-      let returnGGB = hasData ? prevGGB : defGGB;
+      const hasData =
+        prevGGB.isDefault ||
+        !Object.keys(prevGGB).includes('innerData') ||
+        !Object.keys(prevGGB.innerData).length
+          ? false
+          : true;
+      // const returnGGB = hasData ? prevGGB : defGGB;
 
       // fill in other useful data
-      returnGGB.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
-      returnGGB.data.hasData = hasData;
-      returnGGB.data.slideNum = slideNum;
+      if (typeof prevGGB.innerData === 'undefined') {
+        prevGGB.innerData = ggbInnerDataDefault;
+      }
+      prevGGB.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevGGB.data.hasData = hasData;
+      prevGGB.data.slideNum = slideNum;
       // set text value
-      returnGGB.data.flagText = hasData ? '' : returnGGB.data.goBackString;
+      prevGGB.data.flagText = hasData ? '' : prevGGB.data.goBackString;
       // record if there was already data so it doesn't wrongfully overwritten
       // maintain a record of whether we've had data
       const existingData = getData(
@@ -545,17 +437,17 @@ function getPrevComp(obj) {
       const hadData = hasData || existingData?.data?.hadData || false;
       if (hasData) {
         // if we have new data, (over)write to save it
-        returnGGB.data.hadData = hadData;
+        prevGGB.data.hadData = hadData;
         // create a dummy object to pass to updateData
         const newData = {};
-        newData[`oldData${slideID + compName}`] = { ...returnGGB };
+        newData[`oldData${slideID + compName}`] = { ...prevGGB };
         saveData(newData, components[storageComp]);
       } else if (existingData?.data?.hasData) {
         // if we don't have new data but there is oldData, grab it
-        returnGGB = { ...existingData };
+        prevGGB = { ...existingData };
       }
 
-      return { ...returnGGB };
+      return { ...prevGGB };
     }
     case 'input': {
       const defInput = {

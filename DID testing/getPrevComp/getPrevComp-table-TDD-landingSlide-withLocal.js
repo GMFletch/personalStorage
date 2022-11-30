@@ -1,115 +1,74 @@
-const {
-  text1,
-  text2,
-  text3,
-  text4,
-  text5,
-  table1,
-  table2,
-  table3,
-  table4,
-  table2a,
-} = components;
+const { text1, text2, text3, text4, text5, table1, table2, table3, table4 } =
+  components;
 
-const ID1 = 'slide-7e97af503a44';
-const compType = 'fillblank';
-const compAbr = 'FIB';
+const ID1 = 'slide-3b8a3709aa1f';
 
 const otherSlideNum = utils.getSlideNum(ID1);
-const compStateArray = [
-  'default',
-  'noData',
-  'partialData',
-  'completeData',
-  'noInputs',
-];
-const tablesArr = [table1, table2, table3, table4, table2a];
 
-const defaultComp = getPrevComp({
+const defaultTable = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[0].concat(compAbr),
-  compType: compType,
+  compName: 'defaultTable',
+  compType: 'table',
   utils,
   components,
 });
 
-console.log('defaultComp');
-console.log(defaultComp);
-
-const noInputsComp = getPrevComp({
+const noDataTable = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[4].concat(compAbr),
-  compType: compType,
+  compName: 'noDataTable',
+  compType: 'table',
   utils,
   components,
 });
 
-console.log('noInputsComp');
-console.log(noInputsComp);
-
-const noDataComp = getPrevComp({
+const partialDataTable = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[1].concat(compAbr),
-  compType: compType,
+  compName: 'partialDataTable',
+  compType: 'table',
   utils,
   components,
 });
 
-console.log('noDataComp');
-console.log(noDataComp);
-
-const partialDataComp = getPrevComp({
+const completeDataTable = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[2].concat(compAbr),
-  compType: compType,
+  compName: 'completeDataTable',
+  compType: 'table',
   utils,
   components,
 });
 
-console.log('partialDataComp');
-console.log(partialDataComp);
+console.log(defaultTable);
+console.log(noDataTable);
+console.log(partialDataTable);
+console.log(completeDataTable);
 
-const completeDataComp = getPrevComp({
-  slideID: ID1,
-  compName: compStateArray[3].concat(compAbr),
-  compType: compType,
-  utils,
-  components,
-});
+// console.log('tableDefaultTest start');
+tableDefaultTest();
 
-console.log('completeDataComp');
-console.log(completeDataComp);
+// console.log('tableEmptyTest start');
+tableEmptyTest();
 
-// console.log('defaultTest start');
-defaultTest(defaultComp, tablesArr[0]);
+// console.log('tablePartialTest start');
+tablePartialTest();
 
-// console.log('noInputsTest start');
-noInputsTest(noInputsComp, tablesArr[4]);
-
-// console.log('noDataTest start');
-noDataTest(noDataComp, tablesArr[1]);
-
-// console.log('partialDataTest start');
-partialDataTest(partialDataComp, tablesArr[2]);
-
-// console.log('completeDataTest start');
-completeDataTest(completeDataComp, tablesArr[3]);
+// console.log('tableCompleteTest start');
+tableCompleteTest();
 
 // console.log('end of tests');
 
-function defaultTest(tempComp, table) {
-  table.updateCell(0, 1, {
-    value: tempComp.isDefault ? 'pass' : 'FAIL',
-    className: tempComp?.isDefault ? 'bg-success' : 'bg-danger',
+function tableDefaultTest() {
+  table1.updateCell(0, 1, {
+    value: defaultTable.isDefault ? 'pass' : 'FAIL',
+    className: defaultTable?.isDefault ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.length === 0 ? 'pass' : 'FAIL',
-    className:
-      tempComp.data.processedInputs.length === 0 ? 'bg-success' : 'bg-danger',
+  // rows === 1; headers are not included for orig table
+  table1.updateCell(1, 1, {
+    value: defaultTable.data.rows.length === 1 ? 'pass' : 'FAIL',
+    className: defaultTable.data.rows.length === 1 ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(2, 1, {
+  table1.updateCell(2, 1, {
     value:
-      tempComp.data.goBackString ===
+      defaultTable.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
         otherSlideNum,
         ']}$'
@@ -117,7 +76,7 @@ function defaultTest(tempComp, table) {
         ? 'pass'
         : 'FAIL',
     className:
-      tempComp.data.goBackString ===
+      defaultTable.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
         otherSlideNum,
         ']}$'
@@ -125,30 +84,30 @@ function defaultTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
-  table.updateCell(3, 1, {
-    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+  table1.updateCell(3, 1, {
+    value: !defaultTable.data.hasData ? 'pass' : 'FAIL',
+    className: !defaultTable.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+  table1.updateCell(4, 1, {
+    value: !defaultTable.data.isComplete ? 'pass' : 'FAIL',
+    className: !defaultTable.data.isComplete ? 'bg-success' : 'bg-danger',
   });
 }
 
-function noInputsTest(tempComp, table) {
-  table.updateCell(0, 1, {
-    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
+function tableEmptyTest() {
+  table2.updateCell(0, 1, {
+    value: typeof noDataTable.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
-      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
+      typeof noDataTable.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.length === 0 ? 'pass' : 'FAIL',
-    className:
-      tempComp.data.processedInputs.length === 0 ? 'bg-success' : 'bg-danger',
+  // rows === 1; headers are not included for orig table
+  table2.updateCell(1, 1, {
+    value: noDataTable.data.rows.length === 1 ? 'pass' : 'FAIL',
+    className: noDataTable.data.rows.length === 1 ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(2, 1, {
+  table2.updateCell(2, 1, {
     value:
-      tempComp.data.goBackString ===
+      noDataTable.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
         otherSlideNum,
         ']}$'
@@ -156,7 +115,7 @@ function noInputsTest(tempComp, table) {
         ? 'pass'
         : 'FAIL',
     className:
-      tempComp.data.goBackString ===
+      noDataTable.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
         otherSlideNum,
         ']}$'
@@ -164,49 +123,33 @@ function noInputsTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
-  table.updateCell(3, 1, {
-    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+  table2.updateCell(3, 1, {
+    value: !noDataTable.data.hasData ? 'pass' : 'FAIL',
+    className: !noDataTable.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+  table2.updateCell(4, 1, {
+    value: !noDataTable.data.isComplete ? 'pass' : 'FAIL',
+    className: !noDataTable.data.isComplete ? 'bg-success' : 'bg-danger',
   });
 }
 
-function noDataTest(tempComp, table) {
-  table.updateCell(0, 1, {
-    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
+function tablePartialTest() {
+  table3.updateCell(0, 1, {
+    value: typeof partialDataTable.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
-      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
+      typeof partialDataTable.isDefault === 'undefined'
+        ? 'bg-success'
+        : 'bg-danger',
   });
-  table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.every((el) => {
-      return (
-        el ===
-        '$\\color{707070}\\text{[no input yet on slide '.concat(
-          otherSlideNum,
-          ']}$'
-        )
-      );
-    })
-      ? 'pass'
-      : 'FAIL',
-    className: tempComp.data.processedInputs.every((el) => {
-      return (
-        el ===
-        '$\\color{707070}\\text{[no input yet on slide '.concat(
-          otherSlideNum,
-          ']}$'
-        )
-      );
-    })
-      ? 'bg-success'
-      : 'bg-danger',
+  // rows === 4; headers are not included for orig table
+  table3.updateCell(1, 1, {
+    value: partialDataTable.data.rows.length === 4 ? 'pass' : 'FAIL',
+    className:
+      partialDataTable.data.rows.length === 4 ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(2, 1, {
+  table3.updateCell(2, 1, {
     value:
-      tempComp.data.goBackString ===
+      partialDataTable.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
         otherSlideNum,
         ']}$'
@@ -214,7 +157,7 @@ function noDataTest(tempComp, table) {
         ? 'pass'
         : 'FAIL',
     className:
-      tempComp.data.goBackString ===
+      partialDataTable.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
         otherSlideNum,
         ']}$'
@@ -222,37 +165,33 @@ function noDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
-  table.updateCell(3, 1, {
-    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+  table3.updateCell(3, 1, {
+    value: partialDataTable.data.hasData ? 'pass' : 'FAIL',
+    className: partialDataTable.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+  table3.updateCell(4, 1, {
+    value: !partialDataTable.data.isComplete ? 'pass' : 'FAIL',
+    className: !partialDataTable.data.isComplete ? 'bg-success' : 'bg-danger',
   });
 }
 
-function partialDataTest(tempComp, table) {
-  table.updateCell(0, 1, {
-    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
+function tableCompleteTest() {
+  table4.updateCell(0, 1, {
+    value: typeof completeDataTable.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
-      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
-  });
-  table.updateCell(1, 1, {
-    value:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === tempComp.data.goBackString
-        ? 'pass'
-        : 'FAIL',
-    className:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === tempComp.data.goBackString
+      typeof completeDataTable.isDefault === 'undefined'
         ? 'bg-success'
         : 'bg-danger',
   });
-  table.updateCell(2, 1, {
+  // rows === 1; headers are not included for orig table
+  table4.updateCell(1, 1, {
+    value: completeDataTable.data.rows.length === 1 ? 'pass' : 'FAIL',
+    className:
+      completeDataTable.data.rows.length === 1 ? 'bg-success' : 'bg-danger',
+  });
+  table4.updateCell(2, 1, {
     value:
-      tempComp.data.goBackString ===
+      completeDataTable.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
         otherSlideNum,
         ']}$'
@@ -260,7 +199,7 @@ function partialDataTest(tempComp, table) {
         ? 'pass'
         : 'FAIL',
     className:
-      tempComp.data.goBackString ===
+      completeDataTable.data.goBackString ===
       '$\\color{707070}\\text{[no input yet on slide '.concat(
         otherSlideNum,
         ']}$'
@@ -268,59 +207,13 @@ function partialDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
-  table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+  table4.updateCell(3, 1, {
+    value: completeDataTable.data.hasData ? 'pass' : 'FAIL',
+    className: completeDataTable.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
-}
-
-function completeDataTest(tempComp, table) {
-  table.updateCell(0, 1, {
-    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
-    className:
-      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
-  });
-  table.updateCell(1, 1, {
-    value:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === '$2$'
-        ? 'pass'
-        : 'FAIL',
-    className:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === '$2$'
-        ? 'bg-success'
-        : 'bg-danger',
-  });
-  table.updateCell(2, 1, {
-    value:
-      tempComp.data.goBackString ===
-      '$\\color{707070}\\text{[no input yet on slide '.concat(
-        otherSlideNum,
-        ']}$'
-      )
-        ? 'pass'
-        : 'FAIL',
-    className:
-      tempComp.data.goBackString ===
-      '$\\color{707070}\\text{[no input yet on slide '.concat(
-        otherSlideNum,
-        ']}$'
-      )
-        ? 'bg-success'
-        : 'bg-danger',
-  });
-  table.updateCell(3, 1, {
-    value: tempComp.data.hasData ? 'pass' : 'FAIL',
-    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
-  });
-  table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+  table4.updateCell(4, 1, {
+    value: completeDataTable.data.isComplete ? 'pass' : 'FAIL',
+    className: completeDataTable.data.isComplete ? 'bg-success' : 'bg-danger',
   });
 }
 

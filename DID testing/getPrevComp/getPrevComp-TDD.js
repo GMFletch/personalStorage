@@ -39,67 +39,40 @@ function getPrevComp(obj) {
     case 'tablecomplex': {
       const defComplexTable = {
         data: {
-          rows: [
-            [
-              {
-                alignment: 'center',
-                ariaLabel: 'Please add text',
-                className: '',
-                colSpan: 1,
-                editable: true,
-                inputType: 'text',
-                math: true,
-                merged: false,
-                mixedText: [
-                  {
-                    type: 'paragraph',
-                    children: [
-                      {
-                        text: '',
-                      },
-                    ],
-                  },
-                ],
-                numberOfLines: '1',
-                rowSpan: 1,
-                scope: 'col',
-                showAreaToolTip: true,
-                type: 'singleline',
-                value: '',
-              },
-            ],
-            [
-              {
-                alignment: 'center',
-                ariaLabel: 'Please add text',
-                className: '',
-                colSpan: 1,
-                editable: true,
-                inputType: 'text',
-                math: true,
-                merged: false,
-                mixedText: [
-                  {
-                    type: 'paragraph',
-                    children: [
-                      {
-                        text: '',
-                      },
-                    ],
-                  },
-                ],
-                numberOfLines: '1',
-                rowSpan: 1,
-                showAreaToolTip: true,
-                type: 'singleline',
-                value: '',
-              },
-            ],
-          ],
+          rows: [],
         },
         isDefault: true,
         type: 'complextable',
       };
+
+      const defRow = {
+        alignment: 'center',
+        ariaLabel: 'Please add text',
+        className: '',
+        colSpan: 1,
+        editable: true,
+        inputType: 'text',
+        math: true,
+        merged: false,
+        mixedText: [
+          {
+            type: 'paragraph',
+            children: [
+              {
+                text: '',
+              },
+            ],
+          },
+        ],
+        numberOfLines: '1',
+        rowSpan: 1,
+        scope: 'col',
+        showAreaToolTip: true,
+        type: 'singleline',
+        value: '',
+      };
+
+      defComplexTable.data.rows.push([defRow], [defRow]);
 
       const prevComplexTable = JSON.parse(
         JSON.stringify(
@@ -119,14 +92,19 @@ function getPrevComp(obj) {
         }
       }
 
-      prevComplexTable.data.hasData = tempArray.some((cell) => {
-        return typeof cell.scope !== 'undefined' ? false : getText(cell);
-      });
-      prevComplexTable.data.isComplete = tempArray.every((cell) => {
-        return cell.merged || typeof cell.scope !== 'undefined'
-          ? true
-          : getText(cell);
-      });
+      const isDefault = !!prevComplexTable.isDefault;
+      prevComplexTable.data.hasData = isDefault
+        ? false
+        : tempArray.some((cell) => {
+            return typeof cell.scope !== 'undefined' ? false : getText(cell);
+          });
+      prevComplexTable.data.isComplete = isDefault
+        ? false
+        : tempArray.every((cell) => {
+            return cell.merged || typeof cell.scope !== 'undefined'
+              ? true
+              : getText(cell);
+          });
 
       prevComplexTable.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevComplexTable.data.slideNum = slideNum;
@@ -182,7 +160,7 @@ function getPrevComp(obj) {
     }
     case 'ggb':
     case 'geogebra': {
-      const ggbInnerData = obj.ggbInnerData;
+      const ggbInnerDataDefault = obj.ggbInnerDataDefault;
       const storageComp = (function () {
         const allComps = Object.keys(components).sort();
         const firstComp = allComps[0];
@@ -196,42 +174,47 @@ function getPrevComp(obj) {
       })();
       const defGGB = {
         data: {},
-        innerData: ggbInnerData,
+        innerData: ggbInnerDataDefault,
         isDefault: true,
         type: 'geogebra',
       };
-      if (typeof ggbInnerData !== 'object') {
+      if (typeof ggbInnerDataDefault !== 'object') {
         console.warn(
-          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp includes property of ggbInnerData and that it is an object that includes your desired innerData.'
+          'Error in getPrevComp DID Library function: Be sure argument for getPrevComp includes property of ggbInnerDataDefault and that it is an object that includes your desired innerData.'
         );
         console.warn('argment passed to getPrevComp shown below');
         console.log(obj);
-        console.warn('ggbInnerData passed to getPrevComp shown below');
-        console.log(ggbInnerData);
-        console.warn('typeof ggbInnerData passed to getPrevComp shown below');
-        console.log(typeof ggbInnerData);
+        console.warn('ggbInnerDataDefault passed to getPrevComp shown below');
+        console.log(ggbInnerDataDefault);
+        console.warn(
+          'typeof ggbInnerDataDefault passed to getPrevComp shown below'
+        );
+        console.log(typeof ggbInnerDataDefault);
         return;
       }
 
       // get previous data
-      const prevGGB = JSON.parse(
-        JSON.stringify(utils.getFromSlide(slideID, compName, false) || false)
+      let prevGGB = JSON.parse(
+        JSON.stringify(utils.getFromSlide(slideID, compName, defGGB) || defGGB)
       );
 
       // check previous data - if any of the checks are truthy, hasData is true; else it is false
-      const hasData = !!(
-        prevGGB ||
-        Object.keys(prevGGB).includes('innerData') ||
-        Object.keys(prevGGB.innerData).length
-      );
-      let returnGGB = hasData ? prevGGB : defGGB;
+      const hasData =
+        prevGGB.isDefault ||
+        !Object.keys(prevGGB).includes('innerData') ||
+        !Object.keys(prevGGB.innerData).length
+          ? false
+          : true;
 
       // fill in other useful data
-      returnGGB.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
-      returnGGB.data.hasData = hasData;
-      returnGGB.data.slideNum = slideNum;
+      if (typeof prevGGB.innerData === 'undefined') {
+        prevGGB.innerData = ggbInnerDataDefault;
+      }
+      prevGGB.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevGGB.data.hasData = hasData;
+      prevGGB.data.slideNum = slideNum;
       // set text value
-      returnGGB.data.flagText = hasData ? '' : returnGGB.data.goBackString;
+      prevGGB.data.flagText = hasData ? '' : prevGGB.data.goBackString;
       // record if there was already data so it doesn't wrongfully overwritten
       // maintain a record of whether we've had data
       const existingData = getData(
@@ -241,17 +224,17 @@ function getPrevComp(obj) {
       const hadData = hasData || existingData?.data?.hadData || false;
       if (hasData) {
         // if we have new data, (over)write to save it
-        returnGGB.data.hadData = hadData;
+        prevGGB.data.hadData = hadData;
         // create a dummy object to pass to updateData
         const newData = {};
-        newData[`oldData${slideID + compName}`] = { ...returnGGB };
+        newData[`oldData${slideID + compName}`] = { ...prevGGB };
         saveData(newData, components[storageComp]);
       } else if (existingData?.data?.hasData) {
         // if we don't have new data but there is oldData, grab it
-        returnGGB = { ...existingData };
+        prevGGB = { ...existingData };
       }
 
-      return { ...returnGGB };
+      return { ...prevGGB };
     }
     case 'input': {
       const defInput = {
@@ -269,10 +252,6 @@ function getPrevComp(obj) {
         )
       );
       // fill in other useful data
-      console.log('compName');
-      console.log(compName);
-      console.log('prevInput');
-      console.log(prevInput);
       prevInput.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevInput.data.hasData = prevInput?.isDefault
         ? false
@@ -280,7 +259,7 @@ function getPrevComp(obj) {
       const hasData = prevInput.data.hasData;
       prevInput.data.slideNum = slideNum;
       // set text values if no data
-      if (!prevInput.data.hasData) {
+      if (!hasData) {
         // if mixed, put goBackString in data.mixedText[0].children[0].text
         if (prevInput.data.inputType === 'mixed') {
           prevInput.data.mixedText[0].children[0].text =
@@ -291,7 +270,7 @@ function getPrevComp(obj) {
           prevInput.data.text = prevInput.data.goBackString.slice();
         }
       }
-      prevInput.data.flagText = prevInput.data.hasData
+      prevInput.data.flagText = hasData
         ? ''
         : prevInput.data.goBackString.slice();
 
@@ -315,6 +294,7 @@ function getPrevComp(obj) {
       // fill in other useful data
       prevRTE.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       const goBackString = prevRTE.data.goBackString;
+      const isDefault = !!prevRTE.isDefault;
       const noLocalData = typeof prevRTE?.localData?.inputs === 'undefined';
       prevRTE.data.inputs = noLocalData
         ? []
@@ -324,13 +304,13 @@ function getPrevComp(obj) {
           });
       const tempInputs = prevRTE?.localData?.inputs;
       prevRTE.data.hasData =
-        noLocalData || prevRTE.isDefault
+        noLocalData || isDefault
           ? false
           : tempInputs.length === 0
           ? true
           : tempInputs.some((input) => getText(input));
       prevRTE.data.isComplete =
-        noLocalData || prevRTE.isDefault
+        noLocalData || isDefault
           ? false
           : tempInputs.length === 0
           ? true
@@ -430,14 +410,18 @@ function getPrevComp(obj) {
       );
 
       // check previous data, fill in useful data
-      prevTable.data.hasData =
-        // LEVI - REVISIT THIS - CAN I CHECK THIS FROM THE TABLE ITSELF?
-        // uncomment following line for original tables where students edit headers:
-        // prevTable.data.columns.some(({ value }) => value) ||
-        prevTable.data.rows.some((row) => row.some((cell) => getText(cell)));
-      prevTable.data.isComplete = prevTable.data.rows.every((row) =>
-        row.every((cell) => getText(cell))
-      );
+      const isDefault = !!prevTable.isDefault;
+      prevTable.data.hasData = isDefault
+        ? false
+        : // LEVI - REVISIT THIS - CAN I CHECK THIS FROM THE TABLE ITSELF?
+          // uncomment following line for original tables where students edit headers:
+          // prevTable.data.columns.some(({ value }) => value) ||
+          prevTable.data.rows.some((row) => row.some((cell) => getText(cell)));
+      prevTable.data.isComplete = isDefault
+        ? false
+        : prevTable.data.rows.every((row) =>
+            row.every((cell) => getText(cell))
+          );
       prevTable.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevTable.data.slideNum = slideNum;
       prevTable.data.flagText = prevTable.data.isComplete
@@ -530,14 +514,14 @@ function getText(obj) {
         : obj.value.trim();
     case 'math':
       const tempText = obj.text?.trim();
-      const tempValue = obj.value?.trim();
-      return typeof tempText !== 'undefined'
-        ? tempText === ''
-          ? ''
-          : `$${tempText}$`
-        : tempValue === ''
+      const tempTextOrValue =
+        typeof tempText !== 'undefined' ? tempText : obj.value?.trim();
+      return tempTextOrValue === ''
         ? ''
-        : `$${tempValue}$`;
+        : tempTextOrValue.charAt(0) === '$' &&
+          tempTextOrValue.charAt(tempTextOrValue.length - 1) === '$'
+        ? tempTextOrValue
+        : `$${tempTextOrValue}$`;
     case 'mixed':
       return obj.mixedText[0]?.children
         .map((child) => {

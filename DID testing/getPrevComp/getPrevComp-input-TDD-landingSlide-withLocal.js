@@ -4,30 +4,30 @@ const {
   text3,
   text4,
   text5,
+  text6,
+  text7,
+  text8,
   table1,
   table2,
   table3,
   table4,
-  table2a,
+  table5,
+  table6,
+  table7,
 } = components;
 
-const ID1 = 'slide-7e97af503a44';
-const compType = 'fillblank';
-const compAbr = 'FIB';
+const ID1 = 'slide-10196a314a28';
+const compType = 'input';
+const compAbr = 'Input';
 
 const otherSlideNum = utils.getSlideNum(ID1);
-const compStateArray = [
-  'default',
-  'noData',
-  'partialData',
-  'completeData',
-  'noInputs',
-];
-const tablesArr = [table1, table2, table3, table4, table2a];
+// const textTypeArray = ['text', 'math', 'mixed'];
+// const compStateArray = ['default', 'complete', 'blank'];
+const tablesArr = [table1, table2, table3, table4, table5, table6, table7];
 
 const defaultComp = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[0].concat(compAbr),
+  compName: 'defaultComp',
   compType: compType,
   utils,
   components,
@@ -36,77 +36,111 @@ const defaultComp = getPrevComp({
 console.log('defaultComp');
 console.log(defaultComp);
 
-const noInputsComp = getPrevComp({
+const textInputBlank = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[4].concat(compAbr),
+  compName: 'textInputBlank',
   compType: compType,
   utils,
   components,
 });
 
-console.log('noInputsComp');
-console.log(noInputsComp);
+console.log('textInputBlank');
+console.log(textInputBlank);
 
-const noDataComp = getPrevComp({
+const mathInputBlank = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[1].concat(compAbr),
+  compName: 'mathInputBlank',
   compType: compType,
   utils,
   components,
 });
 
-console.log('noDataComp');
-console.log(noDataComp);
+console.log('mathInputBlank');
+console.log(mathInputBlank);
 
-const partialDataComp = getPrevComp({
+const mixedInputBlank = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[2].concat(compAbr),
+  compName: 'mixedInputBlank',
   compType: compType,
   utils,
   components,
 });
 
-console.log('partialDataComp');
-console.log(partialDataComp);
+console.log('mixedInputBlank');
+console.log(mixedInputBlank);
 
-const completeDataComp = getPrevComp({
+const textInputComplete = getPrevComp({
   slideID: ID1,
-  compName: compStateArray[3].concat(compAbr),
+  compName: 'textInputComplete',
   compType: compType,
   utils,
   components,
 });
 
-console.log('completeDataComp');
-console.log(completeDataComp);
+console.log('textInputComplete');
+console.log(textInputComplete);
+
+const mathInputComplete = getPrevComp({
+  slideID: ID1,
+  compName: 'mathInputComplete',
+  compType: compType,
+  utils,
+  components,
+});
+
+console.log('mathInputComplete');
+console.log(mathInputComplete);
+
+const mixedInputComplete = getPrevComp({
+  slideID: ID1,
+  compName: 'mixedInputComplete',
+  compType: compType,
+  utils,
+  components,
+});
+
+console.log('mixedInputComplete');
+console.log(mixedInputComplete);
 
 // console.log('defaultTest start');
 defaultTest(defaultComp, tablesArr[0]);
 
-// console.log('noInputsTest start');
-noInputsTest(noInputsComp, tablesArr[4]);
+// console.log('textInputBlank start');
+textInputBlankTest(textInputBlank, tablesArr[1]);
 
-// console.log('noDataTest start');
-noDataTest(noDataComp, tablesArr[1]);
+// console.log('mathInputBlank start');
+mathInputBlankTest(mathInputBlank, tablesArr[2]);
 
-// console.log('partialDataTest start');
-partialDataTest(partialDataComp, tablesArr[2]);
+// console.log('mixedInputBlank start');
+mixedInputBlankTest(mixedInputBlank, tablesArr[3]);
 
-// console.log('completeDataTest start');
-completeDataTest(completeDataComp, tablesArr[3]);
+// console.log('textInputComplete start');
+textInputCompleteTest(textInputComplete, tablesArr[4]);
+
+// console.log('mathInputComplete start');
+mathInputCompleteTest(mathInputComplete, tablesArr[5]);
+
+// console.log('mixedInputComplete start');
+mixedInputCompleteTest(mixedInputComplete, tablesArr[6]);
 
 // console.log('end of tests');
 
 function defaultTest(tempComp, table) {
+  // isDefault: true
   table.updateCell(0, 1, {
     value: tempComp.isDefault ? 'pass' : 'FAIL',
     className: tempComp?.isDefault ? 'bg-success' : 'bg-danger',
   });
+  // getText(text) === goBackString
   table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.length === 0 ? 'pass' : 'FAIL',
+    value:
+      getText(tempComp.data) === tempComp.data.goBackString ? 'pass' : 'FAIL',
     className:
-      tempComp.data.processedInputs.length === 0 ? 'bg-success' : 'bg-danger',
+      getText(tempComp.data) === tempComp.data.goBackString
+        ? 'bg-success'
+        : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -125,27 +159,30 @@ function defaultTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
 }
 
-function noInputsTest(tempComp, table) {
+function textInputBlankTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // getText(text) === goBackString
   table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.length === 0 ? 'pass' : 'FAIL',
+    value:
+      getText(tempComp.data) === tempComp.data.goBackString ? 'pass' : 'FAIL',
     className:
-      tempComp.data.processedInputs.length === 0 ? 'bg-success' : 'bg-danger',
+      getText(tempComp.data) === tempComp.data.goBackString
+        ? 'bg-success'
+        : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -164,46 +201,35 @@ function noInputsTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
 }
 
-function noDataTest(tempComp, table) {
+function mathInputBlankTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // getText(text) === goBackString
+  console.log('in math blank test');
+  console.log('getText(tempComp.data)');
+  console.log(getText(tempComp.data));
+  console.log('tempComp.data.goBackString');
+  console.log(tempComp.data.goBackString);
   table.updateCell(1, 1, {
-    value: tempComp.data.processedInputs.every((el) => {
-      return (
-        el ===
-        '$\\color{707070}\\text{[no input yet on slide '.concat(
-          otherSlideNum,
-          ']}$'
-        )
-      );
-    })
-      ? 'pass'
-      : 'FAIL',
-    className: tempComp.data.processedInputs.every((el) => {
-      return (
-        el ===
-        '$\\color{707070}\\text{[no input yet on slide '.concat(
-          otherSlideNum,
-          ']}$'
-        )
-      );
-    })
-      ? 'bg-success'
-      : 'bg-danger',
+    value:
+      getText(tempComp.data) === tempComp.data.goBackString ? 'pass' : 'FAIL',
+    className:
+      getText(tempComp.data) === tempComp.data.goBackString
+        ? 'bg-success'
+        : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -222,34 +248,35 @@ function noDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
   table.updateCell(3, 1, {
     value: !tempComp.data.hasData ? 'pass' : 'FAIL',
     className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
 }
 
-function partialDataTest(tempComp, table) {
+function mixedInputBlankTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // getText(text) === goBackString
+  console.log('in mixed blank test');
+  console.log('getText(tempComp.data)');
+  console.log(getText(tempComp.data));
+  console.log('tempComp.data.goBackString');
+  console.log(tempComp.data.goBackString);
   table.updateCell(1, 1, {
     value:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === tempComp.data.goBackString
-        ? 'pass'
-        : 'FAIL',
+      getText(tempComp.data) === tempComp.data.goBackString ? 'pass' : 'FAIL',
     className:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === tempComp.data.goBackString
+      getText(tempComp.data) === tempComp.data.goBackString
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -268,34 +295,64 @@ function partialDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === false
+  table.updateCell(3, 1, {
+    value: !tempComp.data.hasData ? 'pass' : 'FAIL',
+    className: !tempComp.data.hasData ? 'bg-success' : 'bg-danger',
+  });
+}
+
+function textInputCompleteTest(tempComp, table) {
+  // does NOT have isDefault property
+  table.updateCell(0, 1, {
+    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
+    className:
+      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
+  });
+  // getText(text) === 'a'
+  table.updateCell(1, 1, {
+    value: getText(tempComp.data) === 'a' ? 'pass' : 'FAIL',
+    className: getText(tempComp.data) === 'a' ? 'bg-success' : 'bg-danger',
+  });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
+  table.updateCell(2, 1, {
+    value:
+      tempComp.data.goBackString ===
+      '$\\color{707070}\\text{[no input yet on slide '.concat(
+        otherSlideNum,
+        ']}$'
+      )
+        ? 'pass'
+        : 'FAIL',
+    className:
+      tempComp.data.goBackString ===
+      '$\\color{707070}\\text{[no input yet on slide '.concat(
+        otherSlideNum,
+        ']}$'
+      )
+        ? 'bg-success'
+        : 'bg-danger',
+  });
+  // data.hasData === true
   table.updateCell(3, 1, {
     value: tempComp.data.hasData ? 'pass' : 'FAIL',
     className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: !tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: !tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
-  });
 }
 
-function completeDataTest(tempComp, table) {
+function mathInputCompleteTest(tempComp, table) {
+  // does NOT have isDefault property
   table.updateCell(0, 1, {
     value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
     className:
       typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
   });
+  // getText(text) === '$1$'
   table.updateCell(1, 1, {
-    value:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === '$2$'
-        ? 'pass'
-        : 'FAIL',
-    className:
-      tempComp.data.processedInputs[0] === '1' &&
-      tempComp.data.processedInputs[1] === '$2$'
-        ? 'bg-success'
-        : 'bg-danger',
+    value: getText(tempComp.data) === '$1$' ? 'pass' : 'FAIL',
+    className: getText(tempComp.data) === '$1$' ? 'bg-success' : 'bg-danger',
   });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
   table.updateCell(2, 1, {
     value:
       tempComp.data.goBackString ===
@@ -314,13 +371,54 @@ function completeDataTest(tempComp, table) {
         ? 'bg-success'
         : 'bg-danger',
   });
+  // data.hasData === true
   table.updateCell(3, 1, {
     value: tempComp.data.hasData ? 'pass' : 'FAIL',
     className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
-  table.updateCell(4, 1, {
-    value: tempComp.data.isComplete ? 'pass' : 'FAIL',
-    className: tempComp.data.isComplete ? 'bg-success' : 'bg-danger',
+}
+
+function mixedInputCompleteTest(tempComp, table) {
+  // does NOT have isDefault property
+  table.updateCell(0, 1, {
+    value: typeof tempComp.isDefault === 'undefined' ? 'pass' : 'FAIL',
+    className:
+      typeof tempComp.isDefault === 'undefined' ? 'bg-success' : 'bg-danger',
+  });
+  // getText(text) === 'words $4x$ and numbers $+2$ here'
+  table.updateCell(1, 1, {
+    value:
+      getText(tempComp.data) === 'words $4x$ and numbers $+2$ here'
+        ? 'pass'
+        : 'FAIL',
+    className:
+      getText(tempComp.data) === 'words $4x$ and numbers $+2$ here'
+        ? 'bg-success'
+        : 'bg-danger',
+  });
+  // data.goBackString === '$\\color{707070}\\text{[no input yet on slide '.concat(otherSlideNum,']}$'
+  table.updateCell(2, 1, {
+    value:
+      tempComp.data.goBackString ===
+      '$\\color{707070}\\text{[no input yet on slide '.concat(
+        otherSlideNum,
+        ']}$'
+      )
+        ? 'pass'
+        : 'FAIL',
+    className:
+      tempComp.data.goBackString ===
+      '$\\color{707070}\\text{[no input yet on slide '.concat(
+        otherSlideNum,
+        ']}$'
+      )
+        ? 'bg-success'
+        : 'bg-danger',
+  });
+  // data.hasData === true
+  table.updateCell(3, 1, {
+    value: tempComp.data.hasData ? 'pass' : 'FAIL',
+    className: tempComp.data.hasData ? 'bg-success' : 'bg-danger',
   });
 }
 
