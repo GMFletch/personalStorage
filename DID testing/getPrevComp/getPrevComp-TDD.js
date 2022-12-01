@@ -8,9 +8,9 @@ function getPrevComp(obj) {
     console.warn(
       'Error in getPrevComp DID Library function: Be sure argument for getPrevComp is a single object.'
     );
-    console.warn('argment passed to getPrevComp shown below');
+    console.warn('argument passed to getPrevComp shown below');
     console.log(obj);
-    console.warn('typeof argment passed to getPrevComp shown below');
+    console.warn('typeof argument passed to getPrevComp shown below');
     console.log(typeof obj);
     return;
   }
@@ -25,7 +25,7 @@ function getPrevComp(obj) {
     console.warn(
       'Error in getPrevComp DID Library function: Be sure argument for getPrevComp is a single object containing keys for slideID, compName and compType. Each of the values should be strings.'
     );
-    console.warn('argment passed to getPrevComp shown below');
+    console.warn('argument passed to getPrevComp shown below');
     console.log(obj);
     return;
   }
@@ -106,11 +106,15 @@ function getPrevComp(obj) {
               : getText(cell);
           });
 
-      prevComplexTable.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevComplexTable.data.goBackString = `<p><math display="block" style="color:707070;" xmlns="http://www.w3.org/1998/Math/MathML"><mtext> [no input yet on ${slideNum}]</mtext></math></p>`;
+      prevComplexTable.data.goBackStringKatex = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevComplexTable.data.slideNum = slideNum;
       prevComplexTable.data.flagText = prevComplexTable.data.isComplete
         ? ''
         : prevComplexTable.data.goBackString;
+      prevComplexTable.data.flagTextKatex = prevComplexTable.data.isComplete
+        ? ''
+        : prevComplexTable.data.goBackStringKatex;
       // DID NOT BUILD OUT getCell AND fillCells like in original tables; potential addition for the future
 
       return { ...prevComplexTable };
@@ -137,14 +141,25 @@ function getPrevComp(obj) {
       prevFib.data.isComplete = isDefault
         ? false
         : prevFib.data.values.every((blank) => getText(blank));
-      prevFib.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevFib.data.goBackString = `<p><math display="block" style="color:707070;" xmlns="http://www.w3.org/1998/Math/MathML"><mtext> [no input yet on ${slideNum}]</mtext></math></p>`;
+      prevFib.data.goBackStringKatex = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevFib.data.slideNum = slideNum;
       prevFib.data.flagText = prevFib.data.isComplete
         ? ''
         : prevFib.data.goBackString;
+      prevFib.data.flagTextKatex = prevFib.data.isComplete
+        ? ''
+        : prevFib.data.goBackStringKatex;
       // add some useful methods
       prevFib.getInput = function (position, leaveBlanks = false) {
         const emptyVal = leaveBlanks ? '' : this.data.goBackString;
+        let text = this.data?.values?.[position]?.text
+          ? this.data.values[position].text
+          : emptyVal;
+        return { ...this.data.values[position], text };
+      };
+      prevFib.getInputKatex = function (position, leaveBlanks = false) {
+        const emptyVal = leaveBlanks ? '' : this.data.goBackStringKatex;
         let text = this.data?.values?.[position]?.text
           ? this.data.values[position].text
           : emptyVal;
@@ -154,6 +169,10 @@ function getPrevComp(obj) {
       prevFib.data.processedInputs = prevFib.data.values.map((val) => {
         const tempVal = getText(val);
         return tempVal === '' ? prevFib.data.goBackString : tempVal;
+      });
+      prevFib.data.processedInputsKatex = prevFib.data.values.map((val) => {
+        const tempVal = getText(val);
+        return tempVal === '' ? prevFib.data.goBackStringKatex : tempVal;
       });
 
       return { ...prevFib };
@@ -182,7 +201,7 @@ function getPrevComp(obj) {
         console.warn(
           'Error in getPrevComp DID Library function: Be sure argument for getPrevComp includes property of ggbInnerDataDefault and that it is an object that includes your desired innerData.'
         );
-        console.warn('argment passed to getPrevComp shown below');
+        console.warn('argument passed to getPrevComp shown below');
         console.log(obj);
         console.warn('ggbInnerDataDefault passed to getPrevComp shown below');
         console.log(ggbInnerDataDefault);
@@ -210,11 +229,15 @@ function getPrevComp(obj) {
       if (typeof prevGGB.innerData === 'undefined') {
         prevGGB.innerData = ggbInnerDataDefault;
       }
-      prevGGB.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevGGB.data.goBackString = `<p><math display="block" style="color:707070;" xmlns="http://www.w3.org/1998/Math/MathML"><mtext> [no input yet on ${slideNum}]</mtext></math></p>`;
+      prevGGB.data.goBackStringKatex = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevGGB.data.hasData = hasData;
       prevGGB.data.slideNum = slideNum;
       // set text value
       prevGGB.data.flagText = hasData ? '' : prevGGB.data.goBackString;
+      prevGGB.data.flagTextKatex = hasData
+        ? ''
+        : prevGGB.data.goBackStringKatex;
       // record if there was already data so it doesn't wrongfully overwritten
       // maintain a record of whether we've had data
       const existingData = getData(
@@ -252,7 +275,8 @@ function getPrevComp(obj) {
         )
       );
       // fill in other useful data
-      prevInput.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevInput.data.goBackString = `<p><math display="block" style="color:707070;" xmlns="http://www.w3.org/1998/Math/MathML"><mtext> [no input yet on ${slideNum}]</mtext></math></p>`;
+      prevInput.data.goBackStringKatex = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevInput.data.hasData = prevInput?.isDefault
         ? false
         : !!getText(prevInput.data);
@@ -264,15 +288,21 @@ function getPrevComp(obj) {
         if (prevInput.data.inputType === 'mixed') {
           prevInput.data.mixedText[0].children[0].text =
             prevInput.data.goBackString.slice();
+          prevInput.data.mixedText[0].children[0].textKatex =
+            prevInput.data.goBackStringKatex.slice();
         }
         // if text or math, put goBackString in data.text
         else {
           prevInput.data.text = prevInput.data.goBackString.slice();
+          prevInput.data.textKatex = prevInput.data.goBackStringKatex.slice();
         }
       }
       prevInput.data.flagText = hasData
         ? ''
         : prevInput.data.goBackString.slice();
+      prevInput.data.flagTextKatex = hasData
+        ? ''
+        : prevInput.data.goBackStringKatex.slice();
 
       return { ...prevInput };
     }
@@ -292,15 +322,21 @@ function getPrevComp(obj) {
       );
 
       // fill in other useful data
-      prevRTE.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
-      const goBackString = prevRTE.data.goBackString;
+      prevRTE.data.goBackString = `<p><math display="block" style="color:707070;" xmlns="http://www.w3.org/1998/Math/MathML"><mtext> [no input yet on ${slideNum}]</mtext></math></p>`;
+      prevRTE.data.goBackStringKatex = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       const isDefault = !!prevRTE.isDefault;
       const noLocalData = typeof prevRTE?.localData?.inputs === 'undefined';
       prevRTE.data.inputs = noLocalData
         ? []
         : prevRTE.localData.inputs.map((blank) => {
             const tempVal = getText(blank);
-            return !!tempVal ? tempVal : goBackString;
+            return !!tempVal ? tempVal : prevRTE.data.goBackString;
+          });
+      prevRTE.data.inputsKatex = noLocalData
+        ? []
+        : prevRTE.localData.inputs.map((blank) => {
+            const tempVal = getText(blank);
+            return !!tempVal ? tempVal : prevRTE.data.goBackStringKatex;
           });
       const tempInputs = prevRTE?.localData?.inputs;
       prevRTE.data.hasData =
@@ -321,6 +357,9 @@ function getPrevComp(obj) {
       prevRTE.data.flagText = prevRTE.data.isComplete
         ? ''
         : prevRTE.data.goBackString;
+      prevRTE.data.flagTextKatex = prevRTE.data.isComplete
+        ? ''
+        : prevRTE.data.goBackStringKatex;
 
       return { ...prevRTE };
     }
@@ -347,16 +386,23 @@ function getPrevComp(obj) {
         })
         .filter((label) => !!label);
       // fill in other useful data
-      prevSelect.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevSelect.data.goBackString = `<p><math display="block" style="color:707070;" xmlns="http://www.w3.org/1998/Math/MathML"><mtext> [no input yet on ${slideNum}]</mtext></math></p>`;
+      prevSelect.data.goBackStringKatex = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevSelect.data.hasData = !!prevSelect.data.selected.length;
       prevSelect.data.chosenLabels = selLabels.length
         ? [...selLabels]
         : [prevSelect.data.goBackString];
+      prevSelect.data.chosenLabelsKatex = selLabels.length
+        ? [...selLabels]
+        : [prevSelect.data.goBackStringKatex];
       prevSelect.data.slideNum = slideNum;
       // set text value
       prevSelect.data.flagText = prevSelect.data.hasData
         ? ''
         : prevSelect.data.goBackString;
+      prevSelect.data.flagTextKatex = prevSelect.data.hasData
+        ? ''
+        : prevSelect.data.goBackStringKatex;
 
       return { ...prevSelect };
     }
@@ -422,14 +468,28 @@ function getPrevComp(obj) {
         : prevTable.data.rows.every((row) =>
             row.every((cell) => getText(cell))
           );
-      prevTable.data.goBackString = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
+      prevTable.data.goBackString = `<p><math display="block" style="color:707070;" xmlns="http://www.w3.org/1998/Math/MathML"><mtext> [no input yet on ${slideNum}]</mtext></math></p>`;
+      prevTable.data.goBackStringKatex = `$\\color{707070}\\text{\[no input yet on slide ${slideNum}\]}$`;
       prevTable.data.slideNum = slideNum;
       prevTable.data.flagText = prevTable.data.isComplete
         ? ''
         : prevTable.data.goBackString;
+      prevTable.data.flagTextKatex = prevTable.data.isComplete
+        ? ''
+        : prevTable.data.goBackStringKatex;
       // add some useful methods
       prevTable.getCell = function (row, col, leaveBlanks = false) {
         const emptyVal = leaveBlanks ? '' : this.data.goBackString;
+        let value = this.data?.rows?.[row]?.[col]?.value
+          ? this.data.rows[row][col].value
+          : emptyVal;
+        let mixedText = this.data?.rows?.[row]?.[col]?.mixedText
+          ? [...this.data.rows[row][col].mixedText]
+          : [{ children: [{ text: emptyVal }] }];
+        return { ...this.data.rows[row][col], value, mixedText };
+      };
+      prevTable.getCellKatex = function (row, col, leaveBlanks = false) {
+        const emptyVal = leaveBlanks ? '' : this.data.goBackStringKatex;
         let value = this.data?.rows?.[row]?.[col]?.value
           ? this.data.rows[row][col].value
           : emptyVal;
@@ -469,6 +529,37 @@ function getPrevComp(obj) {
           }
         }
       };
+      prevTable.fillCellsKatex = function (
+        tableName,
+        rowStart = 0,
+        colStart = 0,
+        leaveBlanks = false,
+        cellUpdates = {}
+      ) {
+        const emptyVal = leaveBlanks ? '' : this.data.goBackStringKatex;
+        for (let i = 0, L = prevTable.data.columns.length; i < L; i++) {
+          for (let j = 0, K = prevTable.data.rows.length; j < K; j++) {
+            if (this.getCellKatex(j, i).merged) {
+              continue;
+            }
+            let cellVal = this.getCellKatex(j, i, true).value
+              ? this.getCellKatex(j, i, true).value
+              : emptyVal;
+            const rawMixed = this.getCellKatex(j, i, true).mixedText;
+            const cellMixed = getMixed(rawMixed)
+              ? getMixed(rawMixed)
+              : emptyVal;
+            const fillVal =
+              this.getCellKatex(j, i, true).inputType === 'mixed'
+                ? cellMixed
+                : cellVal;
+            components[tableName].updateCell(j + rowStart, i + colStart, {
+              ...cellUpdates,
+              value: fillVal,
+            });
+          }
+        }
+      };
 
       return { ...prevTable };
     }
@@ -476,7 +567,7 @@ function getPrevComp(obj) {
       console.warn(
         'Error in getPrevComp DID Library function: Please enter a valid component type for compType. These include "complextable", "fillblank", "geogebra", "input", "select", and "table".'
       );
-      console.warn('argment passed to getPrevComp shown below');
+      console.warn('argument passed to getPrevComp shown below');
       console.log(obj);
       console.warn('component type passed to getPrevComp shown below');
       console.log(compType);
