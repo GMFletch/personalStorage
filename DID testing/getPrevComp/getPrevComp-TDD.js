@@ -603,16 +603,19 @@ function getText(obj) {
       return typeof obj.text !== 'undefined'
         ? obj.text.trim()
         : obj.value.trim();
-    case 'math':
-      const tempText = obj.text?.trim();
+    case 'math': {
+      const tempText = obj.text?.toString()?.trim();
       const tempTextOrValue =
-        typeof tempText !== 'undefined' ? tempText : obj.value?.trim();
+        typeof tempText !== 'undefined'
+          ? tempText
+          : obj.value?.toString()?.trim();
       return tempTextOrValue === ''
         ? ''
         : tempTextOrValue.charAt(0) === '$' &&
           tempTextOrValue.charAt(tempTextOrValue.length - 1) === '$'
         ? tempTextOrValue
         : `$${tempTextOrValue}$`;
+    }
     case 'mixed':
       return obj.mixedText[0]?.children
         .map((child) => {
