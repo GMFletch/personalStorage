@@ -18,8 +18,8 @@ rte1.updateData({
   prevRTE1.data.slideNum: ${prevRTE1.data.slideNum}\n\n
   prevRTE1.data.hasData: ${prevRTE1.data.hasData}\n\n
   prevRTE1.data.isComplete: ${prevRTE1.data.isComplete}\n\n
-  prevRTE1.data.inputs: ${prevRTE1.data.inputs}\n\n
-  prevRTE1.data.inputsKatex: ${prevRTE1.data.inputsKatex}\n\n
+  prevRTE1.data.inputs - is an array: ${prevRTE1.data.inputs}\n\n
+  prevRTE1.data.inputsKatex - is an array: ${prevRTE1.data.inputsKatex}\n\n
   prevRTE1.data.inputs-0: ${prevRTE1.data.inputs[0]}\n\n
   prevRTE1.data.inputs-1: ${prevRTE1.data.inputs[1]}\n\n
   prevRTE1.data.goBackString: ${prevRTE1.data.goBackString}\n\n
