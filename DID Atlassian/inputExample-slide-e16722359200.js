@@ -10,10 +10,11 @@ const prevInput3 = didUtils.getPrevComp({
   components,
 });
 
+console.log('prevInput3');
 console.log(prevInput3);
 
 rte1.updateData({
-  text: `pulled text: ${prevInput3.data.text}\n\n
+  text: `pulled text: ${didUtils.getText(prevInput3.data)}\n\n
   prevInput3.isDefault: ${prevInput3.isDefault}\n\n
   prevInput3.data.slideNum: ${prevInput3.data.slideNum}\n\n
   prevInput3.data.hasData: ${prevInput3.data.hasData}\n\n
