@@ -1,3 +1,5 @@
 function solution(upSpeed, downSpeed, desiredHeight) {
-  return Math.floor((desiredHeight - downSpeed) / (upSpeed - downSpeed));
+  return upSpeed >= desiredHeight
+    ? 1
+    : Math.ceil((desiredHeight - downSpeed) / (upSpeed - downSpeed));
 }
