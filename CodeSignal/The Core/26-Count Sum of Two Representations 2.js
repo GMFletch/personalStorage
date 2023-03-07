@@ -1,5 +1,13 @@
 function solution(n, l, r) {
-  const mean = (l + r) / 2;
-  const numToMean = mean - l;
-  return Math.floor(numToMean);
+  let testArr = [];
+  let numOfSolutions = 0;
+  for (let i = l; i <= r; i++) {
+    testArr.push(i);
+  }
+  for (let i = l; i <= r; i++) {
+    if (testArr.includes(n - i)) {
+      numOfSolutions++;
+    }
+  }
+  return numOfSolutions;
 }
