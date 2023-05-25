@@ -1,0 +1,24 @@
+{
+  "name": "personalstorage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "languageTranslations.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edufletch/personalStorage.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edufletch/personalStorage/issues"
+  },
+  "homepage": "https://github.com/edufletch/personalStorage#readme",
+  "devDependencies": {
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "2.8.8"
+  }
+}
