@@ -1,18 +1,22 @@
-function ggbOnInit() {
-    //console.log(ggbApplet.getXML("B"));
-    ggbApplet.registerObjectUpdateListener("B", function () {
-        const param = ggbApplet.getValue("PathParameter(B)");
-        if (param > 0.75 || param < 0.25) {
-            const newIndex =
-                (ggbApplet.getValue("circlePathIncrement") *
-                    ggbApplet.getValue("numRotations")) /
-                    2 +
-                ggbApplet.getValue("indexB");
-            console.log(newIndex);
+let myVal = 2;
 
-            ggbApplet.evalCommand(
-                "SetValue(B, BPath(".concat(newIndex.toString(), "))")
-            );
-        }
-    });
+switch (myVal) {
+    case -1: {
+        myVal += 10;
+        break;
+    }
+    case 0: {
+        myVal += 10;
+        break;
+    }
+    case 1: {
+        myVal += 10;
+        break;
+    }
+
+    default:
+        myVal += 10;
+        break;
 }
+
+console.log(myVal);
