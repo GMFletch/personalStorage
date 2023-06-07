@@ -1,22 +1,8 @@
-let myVal = 2;
-
-switch (myVal) {
-    case -1: {
-        myVal += 10;
-        break;
-    }
-    case 0: {
-        myVal += 10;
-        break;
-    }
-    case 1: {
-        myVal += 10;
-        break;
-    }
-
-    default:
-        myVal += 10;
-        break;
+function myFunc(...args) {
+    console.log(args);
+    // console.log(arguments[0]);
+    // console.log(arguments[1]);
+    // console.log(arguments[2]);
 }
 
-console.log(myVal);
+myFunc("bird", 1, [1, 2, 3]);
