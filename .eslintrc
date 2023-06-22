@@ -10,17 +10,41 @@
     "sourceType": "module"
   },
   "rules": {
+    "comma-dangle": [
+      "warn",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "ignore"
+      }
+    ],
+    "comma-style": "warn",
+    "eqeqeq": "warn",
     "no-const-assign": "warn",
+    "no-case-declarations": "warn",
+    "no-else-return": "warn",
     "no-global-assign": "warn",
+    "no-mixed-operators": "warn",
+    "no-nested-ternary": "warn",
     "no-redeclare": "warn",
     "no-undef": "warn",
+    "no-unneeded-ternary": "warn",
     "no-unused-vars": [
       "off",
-      { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": true,
+        "varsIgnorePattern": "ggbOnInit"
+      }
     ],
     "no-useless-escape": "warn",
     "no-var": "warn",
-    "prefer-const": "warn"
+    "nonblock-statement-body-position": "warn",
+    "prefer-const": "warn",
+    "spaced-comment": "warn"
   },
   "globals": {
     "components": "readonly",
