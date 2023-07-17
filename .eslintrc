@@ -18,7 +18,7 @@
     "no-mixed-operators": "warn",
     "no-nested-ternary": "warn",
     "no-redeclare": "warn",
-    "no-undef": "warn",
+    "no-undef": "error",
     "no-unneeded-ternary": "warn",
     "no-unused-vars": [
       "off",
