@@ -1,7 +1,8 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "node": true
   },
   "extends": "eslint:recommended",
   "overrides": [],
@@ -10,15 +11,27 @@
     "sourceType": "module"
   },
   "rules": {
+    "array-callback-return": ["warn", { "checkForEach": true }],
+    "camelcase": "warn",
+    "dot-notation": "warn",
     "eqeqeq": "warn",
-    "no-const-assign": "warn",
+    "id-length": "warn",
+    "new-cap": "warn",
+    "no-array-constructor": "warn",
     "no-case-declarations": "warn",
+    "no-confusing-arrow": "warn",
+    "no-const-assign": "error",
     "no-else-return": "warn",
-    "no-global-assign": "warn",
+    "no-global-assign": "error",
     "no-mixed-operators": "warn",
+    "no-multi-assign": "error",
     "no-nested-ternary": "warn",
+    "no-new-object": "warn",
+    "no-new-wrappers": "warn",
+    "no-prototype-builtins": "warn",
     "no-redeclare": "warn",
     "no-undef": "error",
+    "no-underscore-dangle": "warn",
     "no-unneeded-ternary": "warn",
     "no-unused-vars": [
       "off",
@@ -31,8 +44,10 @@
     ],
     "no-useless-escape": "warn",
     "no-var": "warn",
-    "nonblock-statement-body-position": "warn",
+    "object-shorthand": "warn",
     "prefer-const": "warn",
+    "prefer-destructuring": "warn",
+    "prefer-object-spread": "warn",
     "spaced-comment": "warn"
   },
   "globals": {
