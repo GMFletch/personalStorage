@@ -19,9 +19,7 @@
   "homepage": "https://github.com/edufletch/personalStorage#readme",
   "devDependencies": {
     "eslint-config-prettier": "^8.8.0",
-    "prettier": "2.8.8"
-  },
-  "dependencies": {
+    "prettier": "2.8.8",
     "typescript": "^5.2.2"
   }
 }
