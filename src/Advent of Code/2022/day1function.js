@@ -18,7 +18,7 @@ const round2 = round1.reduce(
         totalCarried + parseInt(currentItem);
         return totalCarried + parseInt(currentItem);
       }, 0);
-    // some change
+    // some other change
     switch (true) {
       case totalCalsForCurrentElf > overall.highestCals.valueOf(): {
         // set as new highest, and shift everything down
