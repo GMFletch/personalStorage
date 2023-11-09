@@ -1,38 +1,33 @@
 "use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const inputAsJS_1_js_1 = __importDefault(require("./inputAsJS-1.js"));
 const round1 = inputAsJS_1_js_1.default
-  .replaceAll(`\n`, "x")
-  .replaceAll(`;`, "")
-  .split("xx");
-const round2 = round1.reduce(
-  (arrayOfArrays, currentElf, index) => {
+    .replaceAll(`\n`, "x")
+    .replaceAll(`;`, "")
+    .split("xx");
+const round2 = round1.reduce((arrayOfArrays, currentElf, index) => {
     const totalCalsForCurrentElf = currentElf
-      .split("x")
-      .reduce((totalCarried, currentItem) => {
+        .split("x")
+        .reduce((totalCarried, currentItem) => {
         totalCarried + parseInt(currentItem);
         return totalCarried + parseInt(currentItem);
-      }, 0);
+    }, 0);
     const spliceIndex = arrayOfArrays.findIndex((subArray) => {
-      return subArray[0] < totalCalsForCurrentElf;
+        return subArray[0] < totalCalsForCurrentElf;
     });
     if (spliceIndex !== -1) {
-      arrayOfArrays.splice(spliceIndex, 0, [totalCalsForCurrentElf, index]);
-      arrayOfArrays.pop();
+        arrayOfArrays.splice(spliceIndex, 0, [totalCalsForCurrentElf, index]);
+        arrayOfArrays.pop();
     }
     return arrayOfArrays;
-  },
-  [
+}, [
     [0, 0],
     [0, 0],
     [0, 0],
-  ]
-);
+]);
 console.log(round2);
 console.log(round2[0][0] + round2[1][0] + round2[2][0]);
 // import inputData from "./textAsJS.js";
