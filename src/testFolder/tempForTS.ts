@@ -1,5 +1,6 @@
 export default function () {
   const ggbCanvases = document.querySelectorAll("canvas");
+  const ggbCanvases = document.querySelectorAll(".class1 .class2");
   ggbCanvases.forEach((canvas) => {
     const ggbDiv = canvas.closest("div.appletParameters,div.notranslate");
     if (ggbDiv && !canvas.hasAttribute("data-id")) {

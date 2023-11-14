@@ -1,2 +1,3 @@
-"use strict";
-console.log("test");
+const myObj = {};
+
+console.log(myObj.notThere?.length);

@@ -1,9 +1,10 @@
 export default function () {
-  const ggbCanvases = document.querySelectorAll("canvas");
+  const ggbCanvases = Array.from(document.querySelectorAll("canvas"));
   const curatedCanvases = ggbCanvases.filter(function (canvas) {
     const ggbDiv = canvas.closest("div.appletParameters,div.notranslate");
     const hasDataId = canvas.hasAttribute("data-id");
-    const isReady = ggbDiv && !hasDataId;
+    const isReady =
+      ggbDiv && !hasDataId && canvas.getAttribute("aria-label") !== null;
     if (isReady) {
       const parameterID = ggbDiv.getAttribute("id");
       const ariaLabel = canvas
