@@ -2,7 +2,10 @@ import inputData from "./inputAsJS-5-1.js";
 
 // console.log(inputData);
 
-const crateArray = ["G"];
+const crateArray = [
+  ["G", "D", "V", "Z", "J", "S", "B"],
+  ["Z", "S", "M", "G", "V", "S", "B"],
+];
 
 const round1: string[] = inputData.split(`\n`);
 
