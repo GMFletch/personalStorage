@@ -1,12 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 // attempt 1: [Done] exited with code=0 in 0.306 seconds
-const inputAsJS_2_1_js_1 = __importDefault(require("./inputAsJS-2-1.js"));
-console.log(typeof inputAsJS_2_1_js_1.default);
-const round1 = inputAsJS_2_1_js_1.default.replaceAll(` `, "").split(`\n`);
+import inputData from "./inputAsJS-2-1.js";
+console.log(typeof inputData);
+const round1 = inputData.replaceAll(` `, "").split(`\n`);
 console.log(round1);
 const round2 = round1.reduce((currentTotal, currentString) => {
     let scoreThisRound = 0;

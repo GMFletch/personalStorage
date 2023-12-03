@@ -1,9 +1,4 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const inputAsJS_3_1_js_1 = __importDefault(require("./inputAsJS-3-1.js"));
+import inputData from "./inputAsJS-3-1.js";
 // console.log(inputData);
 // const upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 // const lowerCase = "abcdefghijklmnopqrstuvwxyz";
@@ -13,7 +8,7 @@ const inputAsJS_3_1_js_1 = __importDefault(require("./inputAsJS-3-1.js"));
 // lowerCase.split("").forEach((letter) => {
 //   console.log(letter.charCodeAt(0) - 96);
 // });
-const round1 = inputAsJS_3_1_js_1.default.split(`\n`);
+const round1 = inputData.split(`\n`);
 const round2 = round1.reduce((returnArray, currentElf, elfIndex) => {
     if (elfIndex % 3 === 0) {
         returnArray.push([]);

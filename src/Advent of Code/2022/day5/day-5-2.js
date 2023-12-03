@@ -1,11 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const inputAsJS_5_1_js_1 = __importDefault(require("./inputAsJS-5-1.js"));
+import inputData from "./inputAsJS-5-1.js";
 // console.log(inputData);
-const round1 = inputAsJS_5_1_js_1.default.split(`\n`);
+const round1 = inputData.split(`\n`);
 // console.log(round1);
 const round2 = round1.reduce((sum, pair) => {
     const firstSplit = pair.split(",");

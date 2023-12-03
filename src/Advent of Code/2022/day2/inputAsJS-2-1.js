@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = `B Z
+export default `B Z
 B Z
 B Y
 C Y

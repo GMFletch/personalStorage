@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function default_1() {
+export default function () {
     const ggbCanvases = Array.from(document.querySelectorAll("canvas"));
     const curatedCanvases = ggbCanvases.filter(function (canvas) {
         const ggbDiv = canvas.closest("div.appletParameters,div.notranslate");
@@ -21,4 +19,3 @@ function default_1() {
     });
     return curatedCanvases;
 }
-exports.default = default_1;

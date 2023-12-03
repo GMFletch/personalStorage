@@ -1,5 +1,8 @@
 "use strict";
 class User {
+    firstName;
+    lastName;
+    email;
     get getFullName() {
         return `${this.firstName} ${this.lastName}`;
     }
@@ -23,6 +26,7 @@ console.log(myPerson.shareEmail);
 // EXAMPLE error for protected
 // console.log(myPerson.email);
 class someClass {
+    noOverwrite;
     constructor(noOverwrite) {
         this.noOverwrite = noOverwrite;
     }

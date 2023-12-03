@@ -1,10 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const inputAsJS_1_js_1 = __importDefault(require("./inputAsJS-1.js"));
-const round1 = inputAsJS_1_js_1.default
+import inputData from "./inputAsJS-1.js";
+const round1 = inputData
     .replaceAll(`\n`, "x")
     .replaceAll(`;`, "")
     .split("xx");

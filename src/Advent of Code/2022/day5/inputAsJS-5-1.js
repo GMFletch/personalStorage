@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = `8-18,10-19
+export default `8-18,10-19
 12-69,8-15
 62-77,36-50
 26-27,26-91
