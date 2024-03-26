@@ -1,4 +1,4 @@
-import { dv, genericFunction, genericObject } from '../../../globals';
+import { dv } from '../../../globals';
 
 type expectedObj = {
   annotation: string;
@@ -41,11 +41,13 @@ async function getAnnotations(path: string) {
       target,
       text,
     } = objectified;
+    console.log('objectified');
+    console.log(objectified);
     const updated = Object.hasOwn(objectified, 'updated')
       ? objectified.updated.substring(0, 10)
       : '';
     const tagsArray = tags.split(', ');
-    const article = title.substring(0, title.length - 4);
+    const article = title.replace('.pdf', '');
     const quote = target[0].selector[1].exact;
     return {
       annotation: text,
@@ -94,6 +96,9 @@ function showResults(arr: expectedObj[]) {
         return annotationAcc;
       }
       const linkedArticle = `[[${article}${link}|${article}]]`;
+      console.log('article');
+      console.log(article);
+      console.log(linkedArticle);
       const fileDates =
         updated === '' || created === updated ? [created] : [created, updated];
       const datesForDisplay = fileDates.reduce(
@@ -128,7 +133,7 @@ function showResults(arr: expectedObj[]) {
               break;
             }
             default: {
-              const ifNeeded = tagAcc.tags === '' ? '' : ', ';
+              const ifNeeded = tagAcc.tags === '' ? '' : '\n';
               tagAcc.tags = tagAcc.tags.concat(ifNeeded, tagString);
               break;
             }
